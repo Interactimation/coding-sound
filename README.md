@@ -1,6 +1,11 @@
-# Getting Started with Tone.js 1/4
+# Coding Sound
+[Live Site](https://interactimation.github.io/coding-sound/)
 
-## Tone.js
+This is the github Repro for the course _DIG383: Coding Sound_ offered Fall 2025 at Albright College by Mark Baldridge
+
+## Lesson 01: Hello Tone
+
+### Tone.js
 
 [Tone.js](https://tonejs.github.io/) is a javascript library, a Web Audio framework for creating interactive music in the browser, leveraging the Web Audio API
 
@@ -19,9 +24,12 @@ On the high-level, Tone offers common DAW (digital audio workstation) features l
 
 Additionally, Tone provides high-performance building blocks to create your own synthesizers, effects, and complex control signals
 
-## Autoplay Policy 
+### Autoplay Policy 
 
-The [Autoplay Policy](https://developer.chrome.com/blog/autoplay) is an implementation commpn among browsers that users should accept audio or video play by some action (called a "gesture)") of their own, rather than allowing developers to choose an autplay option
+The [Autoplay Policy](https://developer.chrome.com/blog/autoplay) is an implementation commpn among browsers that users should accept audio or video play by some action (called a "gesture)") of their own, rather than allowing developers to choose an autplay option 
+
+For this reason, before we try to produce any sound, whether generated or played back from a file, we'll get the user to click a button (or interact in some other way with the page)  
+[Lesson 01: code](https://github.com/Interactimation/coding-sound/blob/main/lesson01.html)
 
 
 

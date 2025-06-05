@@ -37,3 +37,22 @@ video {
   height: auto;
   max-width: 100%;
 }
+
+
+.button-row {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  background: #f0f0f0;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-row .center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}

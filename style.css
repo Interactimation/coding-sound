@@ -39,6 +39,8 @@ video {
 }
 
 
+ul {list-style-type: square;}
+
 .button-row {
   position: fixed;
   bottom: 0;

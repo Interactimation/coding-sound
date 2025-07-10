@@ -7,7 +7,7 @@ Challenge: Can you make this basic code play a complex tune?
 ** 2. is there a way to stop the Tone.Transport whe the song is done (instead of after a certain time)?
 */
 
-//instantiate the Synth 
+//instantiate the Synth, send it to speakers 
 const synth = new Tone.Synth().toDestination();
 
 //created as a hint for you

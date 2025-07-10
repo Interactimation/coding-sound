@@ -6,7 +6,7 @@
 * Discover: Can the user play more than one tone at a time, a "chord", using Synth or something else?
 */
 
-//instantiate Synth
+//instantiate Synth, send it to the speakers
 const synth = new Tone.Synth().toDestination(); 
 
 //get the play button, when it's clicked run: if the Tone.context.state is NOT "running" then start it and play a tone

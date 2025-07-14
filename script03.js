@@ -9,7 +9,7 @@ EFFECTS
 //instantiate Synth
 const synth = new Tone.Synth(); 
 
-//setup some effects
+//SETUP SOME EFFECTS
 
 //One: FeedbackDelay, two constructors: the simple version is commented out
 //const fbDelay = new Tone.FeedbackDelay('8n', 0.4);

@@ -1,4 +1,5 @@
 /* 
+MUSIC BOX
 * Based on: https://www.youtube.com/watch?v=0uXDdTyYBYQ
 Challenge: Can you make this basic code play a complex tune?
 * Hint: I've set up a var called "octave" and used it in place of a number. I've also logged the value of the variable "index" to the console
@@ -30,7 +31,7 @@ repeat(time);
 //this is the default bpm, but it's here in case you want to change it
 Tone.Transport.bpm.value = 120;
 
-//when the "notes" arey has been run through, repeat it
+//when the "notes" array has been run through, repeat it
 function repeat(time) {
   let note = notes[index % notes.length];
   synth.triggerAttackRelease(note, '8n', time);

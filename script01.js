@@ -1,5 +1,7 @@
 /* 
+HELLO WORLD
 * Based on: https://www.youtube.com/watch?v=7ZhbKclhDf4
+* See also: https://www.thecodecreative.com/blog/tonejs-hello-world
 * Challenge: Use keyboard keys to play different notes
 * See: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
 * And: https://youtu.be/wWUUHjhrmlU?t=70

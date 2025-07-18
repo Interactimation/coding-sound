@@ -8,7 +8,7 @@ HELLO OSCILLATOR
 //variable to switch oscillators
 let wavestyle = "sine";
 
-//construct gain
+//construct gain NOTE: we'ver removed all other filters, to hear the "dry" waveforms
 const gain = new Tone.Gain(0.3);
 
 //instantiate Synth, connect to gain

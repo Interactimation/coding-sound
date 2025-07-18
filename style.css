@@ -58,3 +58,12 @@ ul {list-style-type: square;}
   left: 50%;
   transform: translateX(-50%);
 }
+
+.choice-row{
+    display: inline-block;
+      
+}
+
+.choice-row > .choice:not(:last-child){
+margin-right:1em;
+}

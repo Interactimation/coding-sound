@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 06</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import AudioKeys-->
+
+    <script src="https://cdn.jsdelivr.net/gh/kylestetz/AudioKeys@master/dist/audiokeys.min.js"></script>
+
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+    <!--import the webpage's javascript file-->
+    <script src="script06.js" defer></script>
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>Hello Oscillator</h1>
+
+    <p>
+        We're introducing new concepts here, so the javascript hasn't changed all that much since Lesson 05
+    </p>
+
+    <p>Choose a waveform</p>
+    <div class="choice-row">
+        <button type="button" class="choice" waveform="sine">Sine Wave</button>
+        <button type="button" class="choice" waveform="triangle">Triangle Wave</button>
+        <button type="button" class="choice" waveform="square">Square Wave</button>
+        <button type="button" class="choice" waveform="pulse">Pulse Wave</button>
+        <button type="button" class="choice" waveform="sawtooth">Sawtooth Wave</button>
+        
+    </div>
+
+    <p>Make sure your volume is up</p>
+
+    <p>Play these black or white keys on your computer keyboard<br />
+        (not designed for mobile devices or touch screens)</p>
+    <img src="https://camo.githubusercontent.com/9a2b15e8cc0b9f85d9a21f46fe250a2b6e5b1d7a4abe410afdcc39f9f467c487/68747470733a2f2f7261772e6769746875622e636f6d2f6b796c65737465747a2f617564696f6b6579732f6d61737465722f696d616765732f617564696f6b6579732d6d617070696e672d726f7773322e6a7067"
+        alt="keyboard layout" style="width:50%">
+
+
+    <p>You may wish to see what these oscillations "look" like</p>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Waveforms.png/960px-Waveforms.png?20050829014248"
+    alt="sine, square, triangle and sawtooth waveforms" style="width:50%">
+
+    <p>
+        Now take a moment to learn a bit more about sound: <br />
+    (Note: Old-School Youtube, at some point, suppressed pure sine waves, so you won't hear them, here —too bad! But it's just a couple spots.<br />Find me a more complete and friendly introduction to the topic, and I'll substitute it here
+    </p>
+
+    <!--embed youtube video-->
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/QBYz82nS_xk?si=j4k498cU_EKHQm_3&amp;start=24"
+        title="YouTube video player" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <!--BOTTOM-->
+    <!--Nav Buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/script06.js', '_blank')">Code</button>
+        <button class="right" onclick="window.open('lesson07.html')">Next</button>
+    </div>
+
+</body>
+
+</html>

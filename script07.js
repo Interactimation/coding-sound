@@ -1,13 +1,10 @@
 /* 
-KEYBOARD KEYBOARD
-* Based on: https://www.youtube.com/watch?v=vZ-3uPGclF8
-* Discover: 
-1. AudioKeys README: https://github.com/kylestetz/AudioKeys/blob/master/README.md
-2. More about AudioKeys: https://sonoport.github.io/prototyping-synths-with-AudioKeys.html
-3. Discover Frequencies: https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/  
-* Challenge: Let the note play until the user releases the key, let it evolve
-* Question: Why is there no "play" button to get the sounds to play?
-* Go Further: Follow this tutorial: https://www.youtube.com/watch?v=IT64QQo3jrM —it uses SASS, an extension of CSS: https://sass-lang.com/
+HELLO OSCILLATOR
+* Based on: https://www.youtube.com/watch?v=rgFWlq755V4
+* Discover: Amplitude Vs. Frequency: https://www.britannica.com/video/frequency-amplitude-sound-waves-oscilloscope/-68519
+* Challenge: 
+* Question: 
+* Go Further: 
 */
 
 //SETUP SOME EFFECTS
@@ -30,6 +27,7 @@ const autWah = new Tone.AutoWah({
 //instantiate Synth
 const synth = new Tone.Synth().connect(fbDelay)
 
+
 //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
 const gain = new Tone.Gain(0.3);
 
@@ -48,7 +46,21 @@ keyboard.down((key) => {
     synth.triggerAttackRelease(key.frequency, "8n")
 })
 
+const playBTN = document.getElementById("play-btn");
+let isPlaying = false;
+playBTN.addEventListener("click", async () => {
+    await Tone.start(); // ensures context is unlocked on any click
+
+    if (!isPlaying) {
+        Tone.Transport.start();
+        playBTN.textContent = "Pause";
+        isPlaying = true;
+    } else {
+        Tone.Transport.pause();
+        playBTN.textContent = "Play";
+        isPlaying = false;
+    }
+});
 
 
-  
-                      
+

@@ -1,5 +1,0 @@
-/*
-
-add javascript, below
-
-*/

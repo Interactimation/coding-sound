@@ -76,14 +76,17 @@
             osc1.type = "sine";
             osc1.frequency.value = 220;
             osc1.connect(gain);
-            gain.toDestination();
-
+       
             //oscillator 2: adjustable between 110 and 440 Hz (two full octaves)
             let osc2 = new Tone.Oscillator;
             osc2.type = "sine"; // try "triangle"
             osc2.frequency.value = 220;
             osc2.connect(gain);
+
+            //send gain to speakers
             gain.toDestination();
+
+
 
             //top button starts and stops oscillator 1
             const playBTN1 = document.getElementById("play-btn1");

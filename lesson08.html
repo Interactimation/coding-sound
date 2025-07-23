@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 08</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>Sound Synthesis 02: LFO</h1>
+
+    <p>An LFO or Low Frequency Oscillator is just like oscillators we've used before but they're for <i>modulating</i>
+        signals, rather than for creating listenable tones —in fact the frequencies used are generally below 20 Hz, just
+        outside the range of human hearing</p>
+    <ul>
+        <li>
+            The LFO signal is not producing audio but is plugged into —for instance— the amplitude (or "volume") signal
+            for a different
+            oscillator, or its frequency signal
+        </li>
+        <ul>
+            <li>
+                The resulting up and down wave applied to volume would raise and lower amplitude in time with the
+                cycling
+                of the LFO
+            </li>
+            <li>
+                Applied to the frequency, the waved of the LFO might produce a sense of <a
+                    href="https://www.youtube.com/shorts/6mfH8TlDJFk">vibrato</a>
+
+            </li>
+        </ul>
+    </ul>
+
+    <!--create a button named play-btn1-->
+    <div>
+        <p>Oscillator One: 220 Hz (220 Cycles per Second)</p>
+        <button id="play-btn1">Play </button>
+    </div>
+    <br />
+    <div>
+        <p>Oscillator Two: Starting at 220 Hz (220 Cycles per Second)</p>
+        <button id="play-btn2">Play </button>
+    </div>
+    <br />
+
+    <!--This slider will start in the middle at 220 Hz, A3, and can slide down to A2 or up to A4 or "concert pitch" -->
+    <div class="slidecontainer">
+        <p>Change the pitch of the second oscillator:</p>
+        <input id="pitchSlider" type="range" min="110" max="440" value="384.9" step="0.1">
+        <p>Frequency: <span id="slidval">384.9</span> Hz</p>
+
+
+
+        <!--BOTTOM-->
+        <!--Nav Buttons-->
+        <div class="button-row">
+            <button class="left" onclick="location.href='index.html'">ToC</button>
+            <button class="center"
+                onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson07.html', '_blank')">Code</button>
+            <button class="right" onclick="window.open('lesson08.html')">Next</button>
+        </div>
+
+        <!--JAVASCRIPT-->
+
+        <script>
+
+            /* 
+            SOUND SYNTHESIS
+            * Based on: https://www.youtube.com/watch?v=hgg3ZBLRH58
+            * Challenge: Using the P5.js Editor (https://editor.p5js.org/) follow the above tutorial to create a visual representation of these waveforms  
+            * Discover: Certain positions on ths slider, those closest to but not right on 220 Hz or towards but not right at either end produce some weird "beats" —what's happening there? 
+            * Research: https://en.wikipedia.org/wiki/Beat_(acoustics) with special attention to the section on Binaural Beats: https://en.wikipedia.org/wiki/Beat_(acoustics)#Binaural_beats
+            * Go Further: Develop a binaural beat experience where you chose the beating frequencies
+            */
+
+
+            //construct a gain filter
+            const gain = new Tone.Gain(0.3);
+
+            //oscillator 1: fixed at 220 Hz
+            let osc1 = new Tone.Oscillator;
+            osc1.type = "sine";
+            osc1.frequency.value = 220;
+            osc1.connect(gain);
+
+
+            //oscillator 2: adjustable between 110 and 440 Hz (two full octaves)
+            let osc2 = new Tone.Oscillator;
+            osc2.type = "sine"; // try "triangle"
+            osc2.frequency.value = 384.9;
+            osc2.connect(gain);
+
+            //LFO the three arguments are Hz, followed by the minimum and maximum "output values" which describe the low and high points of the waveform which we might normally associate with "volume"
+            let lfo1 = new Tone.LFO(10, 100, 440);
+            lfo1.connect(osc1.frequency);
+            lfo1.start();
+    
+            //send gain to speakers
+            gain.toDestination();
+
+            //top button starts and stops oscillator 1
+            const playBTN1 = document.getElementById("play-btn1");
+            let isPlaying1 = false;
+            playBTN1.addEventListener("click", async () => {
+                await Tone.start(); // ensures context is unlocked on any click
+
+                if (!isPlaying1) {
+                    osc1.start();
+                    playBTN1.textContent = "Pause";
+                    isPlaying1 = true;
+                } else {
+                    osc1.stop();
+                    playBTN1.textContent = "Play";
+                    isPlaying1 = false;
+                }
+            });
+
+            //middle button starts and stops oscillator 1
+            const playBTN2 = document.getElementById("play-btn2");
+            let isPlaying2 = false;
+            playBTN2.addEventListener("click", async () => {
+                await Tone.start(); // ensures context is unlocked on any click
+
+                if (!isPlaying2) {
+                    osc2.start();
+                    playBTN2.textContent = "Pause";
+                    isPlaying2 = true;
+                } else {
+                    osc2.stop();
+                    playBTN2.textContent = "Play";
+                    isPlaying2 = false;
+                }
+            });
+
+            //slider changes the pitch of oscillator 2
+            const pitchSlider = document.getElementById("pitchSlider");
+            const slidval = document.getElementById("slidval");
+
+            pitchSlider.addEventListener("input", () => {
+                //parse the slider value, which is output as a "string" as a float point decimal instead
+                const freq = parseFloat(pitchSlider.value);
+                osc2.frequency.value = freq;
+                slidval.textContent = freq;
+            });
+
+        </script>
+
+</body>
+
+</html>

@@ -1,9 +1,11 @@
 /* 
 EFFECTS
 * Based on: https://www.youtube.com/watch?v=UCNRRag2GgE
-* Documentation: https://tonejs.github.io/docs/15.1.22/classes/FeedbackDelay.html
+* Documentation: 
+** 1: https://tonejs.github.io/docs/15.1.22/classes/FeedbackDelay.html
+** 2: https://tonejs.github.io/docs/15.1.22/classes/AutoWah.html
 * Challenge: Add effects to a copy of your Music Box until it no longer sounds like the original, but you like the new sound better
-* Discover: Explore at least one more effect
+* Discover: Explore at least one more effect, you can add it to the others os swap some out
 */
 
 //instantiate Synth

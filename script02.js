@@ -5,7 +5,7 @@ Challenge: Can you make this basic code play a complex tune?
 * Hint: I've set up a var called "octave" and used it in place of a number. I've also logged the value of the variable "index" to the console
 * Discover: 
 ** 1. How complex a tune can you write? Imagine you're creating a kind of "music box"
-** 2. is there a way to stop the Tone.Transport whe the song is done (instead of after a certain time)?
+** 2. is there a way to stop the Tone.Transport when the song is done (instead of after a certain time)?
 */
 
 //instantiate the Synth, send it to speakers 

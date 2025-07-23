@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 07</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+    <!--import the webpage's javascript file-->
+    <script src="script07.js" defer></script>
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>Sound Synthesis 01: "Beating"</h1>
+
+    <p>We "synthesize" sounds by combining waveforms in different ways</p>
+    <p>When we talk of "synthesizers" as electronic instruments, which maybe have "voices" which sound like horns or violins, those sounds are created by complicated combinations of waveforms</p>
+
+    <!--create a button named play-btn1-->
+    <div>
+        <p>Oscillator One: 220 Hz (220 Cycles per Second)</p>
+        <button id="play-btn1">Play </button>
+    </div>
+    <br />
+    <div>
+        <p>Oscillator Two: Starting at 220 Hz (220 Cycles per Second)</p>
+        <button id="play-btn2">Play </button>
+    </div>
+    <br />
+
+    <!--This slider will start in the middle at 220 Hz, A3, and can slide down to A2 or up to A4 or "concert pitch" -->
+    <div class="slidecontainer">
+        <p>Change the pitch of the second oscillator:</p>
+        <input id="pitchSlider" type="range" min="110" max="440" value="220" step="0.1">
+        <p>Frequency: <span id="slidval">220</span> Hz</p>
+
+
+
+        <!--BOTTOM-->
+        <!--Nav Buttons-->
+        <div class="button-row">
+            <button class="left" onclick="location.href='index.html'">ToC</button>
+            <button class="center"
+                onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/script07.js', '_blank')">Code</button>
+            <button class="right" onclick="window.open('lesson08.html')">Next</button>
+        </div>
+
+</body>
+
+</html>

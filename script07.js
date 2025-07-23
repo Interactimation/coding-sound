@@ -1,66 +1,75 @@
 /* 
-HELLO OSCILLATOR
-* Based on: https://www.youtube.com/watch?v=rgFWlq755V4
-* Discover: Amplitude Vs. Frequency: https://www.britannica.com/video/frequency-amplitude-sound-waves-oscilloscope/-68519
-* Challenge: 
-* Question: 
-* Go Further: 
+SOUND SYNTHESIS
+* Based on: https://www.youtube.com/watch?v=hgg3ZBLRH58
+* Challenge: Using the P5.js Editor (https://editor.p5js.org/) follow the above tutorial to create a visual representation of these waveforms  
+* Discover: Certain positions on ths slider, those closest to but not right on 220 Hz or towards but not right at either end produce some weird "beats" —what's happening there? 
+* Research: https://en.wikipedia.org/wiki/Beat_(acoustics) with special attention to the section on Binaural Beats: https://en.wikipedia.org/wiki/Beat_(acoustics)#Binaural_beats
+* Go Further: Develop a binaural beat experience where you chose the beating frequencies
 */
 
-//SETUP SOME EFFECTS
 
-//One: FeedbackDelay, two constructors: the simple version is commented out, notice that I've changed some values since last time I used this
-const fbDelay = new Tone.FeedbackDelay({
-    delayTime: 0.1,
-    feedback: 0.1,
-    wet: 0.1,
-});
-
-//Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
-const autWah = new Tone.AutoWah({
-    gain: 0.5,
-    octaves: 4,
-    sensitivity: 0.5,
-    wet: 1,
-})
-
-//instantiate Synth
-const synth = new Tone.Synth().connect(fbDelay)
-
-
-//gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
+//construct a gain filter
 const gain = new Tone.Gain(0.3);
 
-//connect each synth to the Feedback Delay, connect that to the Auto Wah, connect that to Gain and send that to the speakers —AGAIN, SET GAIN LOW!
-
-fbDelay.connect(autWah);
-autWah.connect(gain);
+//oscillator 1: fixed at 220 Hz
+let osc1 = new Tone.Oscillator;
+osc1.type = "sine"; 
+osc1.frequency.value = 220;
+osc1.connect(gain);
 gain.toDestination();
 
-const keyboard = new AudioKeys({
-    rows: 2,
-});
+//oscillator 2: adjustable between 110 and 440 Hz (two full octaves)
+let osc2 = new Tone.Oscillator;
+osc2.type = "sine"; // try "triangle"
+osc2.frequency.value = 220;
+osc2.connect(gain);
+gain.toDestination();
 
-keyboard.down((key) => {
-    console.log(key);
-    synth.triggerAttackRelease(key.frequency, "8n")
-})
-
-const playBTN = document.getElementById("play-btn");
-let isPlaying = false;
-playBTN.addEventListener("click", async () => {
+//top button starts and stops oscillator 1
+const playBTN1 = document.getElementById("play-btn1");
+let isPlaying1 = false;
+playBTN1.addEventListener("click", async () => {
     await Tone.start(); // ensures context is unlocked on any click
 
-    if (!isPlaying) {
-        Tone.Transport.start();
-        playBTN.textContent = "Pause";
-        isPlaying = true;
+    if (!isPlaying1) {
+        osc1.start();
+        playBTN1.textContent = "Pause";
+        isPlaying1 = true;
     } else {
-        Tone.Transport.pause();
-        playBTN.textContent = "Play";
-        isPlaying = false;
+        osc1.stop();
+        playBTN1.textContent = "Play";
+        isPlaying1 = false;
     }
 });
+
+//middle button starts and stops oscillator 1
+const playBTN2 = document.getElementById("play-btn2");
+let isPlaying2 = false;
+playBTN2.addEventListener("click", async () => {
+    await Tone.start(); // ensures context is unlocked on any click
+
+    if (!isPlaying2) {
+        osc2.start();
+        playBTN2.textContent = "Pause";
+        isPlaying2 = true;
+    } else {
+        osc2.stop();
+        playBTN2.textContent = "Play";
+        isPlaying2 = false;
+    }
+});
+
+//slider changes the pitch of oscillator 2
+const pitchSlider = document.getElementById("pitchSlider");
+const slidval = document.getElementById("slidval");
+
+pitchSlider.addEventListener("input", () => {
+    //parse the slider value, which is output as a "string" as a float point decimal instead
+    const freq = parseFloat(pitchSlider.value);
+    osc2.frequency.value = freq;
+    slidval.textContent = freq;
+});
+
 
 
 

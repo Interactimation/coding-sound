@@ -2,9 +2,8 @@
 STEP SEQUENCER
 * Based on: https://www.youtube.com/watch?v=Dxxkma4F-oA
 * Discover: 
-1: Oscillators are sound wave generators and these waves can have different shapes. Read up about them: https://www.perfectcircuit.com/signal/difference-between-waveforms and maybe try the one we're not using, below
-2. IMPORTANT Gain refers the magnitude of a signal, note that we're using Tone.Gain and setting it to 0.2 (it goes from 0 to 1) 
-WHEN USING OSCILLATORS SET GAIN LOW - otherwise you may damage your speakers or hurt your ears
+** 1: Oscillators are sound wave generators and these waves can have different shapes. Read up about them: https://www.perfectcircuit.com/signal/difference-between-waveforms and maybe try one we're not using, below
+** 2. IMPORTANT Gain refers the magnitude of a signal, note that we're using Tone.Gain and setting it to 0.2 (it goes from 0 to 1) WHEN USING CERTAIN OSCILLATORS (SQUARE, FOR INSTANCE) SET GAIN LOW - otherwise you may damage user speakers or hurt their ears!S
 * Challenge: take out the filters or change them, choose different notes, use different synths
 */
 

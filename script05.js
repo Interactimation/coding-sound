@@ -2,11 +2,13 @@
 KEYBOARD KEYBOARD
 * Based on: https://www.youtube.com/watch?v=vZ-3uPGclF8
 * Discover: 
-1. AudioKeys README: https://github.com/kylestetz/AudioKeys/blob/master/README.md
-2. More about AudioKeys: https://sonoport.github.io/prototyping-synths-with-AudioKeys.html
-3. Discover Frequencies: https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/  
-* Challenge: Let the note play until the user releases the key, let it evolve
-* Question: Why is there no "play" button to get the sounds to play?
+** 1. AudioKeys README: https://github.com/kylestetz/AudioKeys/blob/master/README.md
+** 2. More about AudioKeys: https://sonoport.github.io/prototyping-synths-with-AudioKeys.html
+** 3. Discover Frequencies: https://www.idrumtune.com/ultimate-guide-to-musical-frequencies/  
+* Challenge: 
+** 1: Let the note play until the user releases the key (extend sustain) 
+** 2: Let the tone evolve over time
+* Question: Why is there no "play" button to get the sounds to play? Could we remove it from the step sequencer in Lesson 04? How?
 * Go Further: Follow this tutorial: https://www.youtube.com/watch?v=IT64QQo3jrM —it uses SASS, an extension of CSS: https://sass-lang.com/
 */
 

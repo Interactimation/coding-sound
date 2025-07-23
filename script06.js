@@ -2,7 +2,7 @@
 HELLO OSCILLATOR
 * Based on: https://www.youtube.com/watch?v=rgFWlq755V4
 * Discover: Amplitude Vs. Frequency: https://www.britannica.com/video/frequency-amplitude-sound-waves-oscilloscope/-68519
-* Challenge: In the last few lines of this code, we recreate the entire synth object. Find a better way.
+* Challenge: In the last few lines of this code, we recreate the entire synth object each time a "choice" button is clicked. Find a better way.
 */
 
 //variable to switch oscillators

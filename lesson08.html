@@ -21,18 +21,18 @@
     <!-- this is the start of content -->
     <h1>Sound Synthesis 02: LFO</h1>
 
-    <p>An LFO or Low Frequency Oscillator is just like oscillators we've used before but they're for <i>modulating</i>
+    <p>An LFO or Low Frequency Oscillator is like oscillators we've used before but they're for <i>modulating</i>
         signals, rather than for creating listenable tones —in fact the frequencies used are generally below 20 Hz, just
         outside the range of human hearing</p>
     <ul>
         <li>
             The LFO signal is not producing audio but is plugged into —for instance— the amplitude (or "volume") signal
-            for a different
+            of a <i>different</i>
             oscillator, or its frequency signal
         </li>
         <ul>
             <li>
-                The resulting up and down wave applied to volume would raise and lower amplitude in time with the
+                The resulting wave applied to volume would raise and lower amplitude in time with the
                 cycling
                 of the LFO
             </li>
@@ -69,8 +69,8 @@
         <div class="button-row">
             <button class="left" onclick="location.href='index.html'">ToC</button>
             <button class="center"
-                onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson07.html', '_blank')">Code</button>
-            <button class="right" onclick="window.open('lesson08.html')">Next</button>
+                onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson08.html', '_blank')">Code</button>
+            <button class="right" onclick="window.open('lesson09.html')">Next</button>
         </div>
 
         <!--JAVASCRIPT-->
@@ -78,12 +78,12 @@
         <script>
 
             /* 
-            SOUND SYNTHESIS
-            * Based on: https://www.youtube.com/watch?v=hgg3ZBLRH58
-            * Challenge: Using the P5.js Editor (https://editor.p5js.org/) follow the above tutorial to create a visual representation of these waveforms  
-            * Discover: Certain positions on ths slider, those closest to but not right on 220 Hz or towards but not right at either end produce some weird "beats" —what's happening there? 
-            * Research: https://en.wikipedia.org/wiki/Beat_(acoustics) with special attention to the section on Binaural Beats: https://en.wikipedia.org/wiki/Beat_(acoustics)#Binaural_beats
-            * Go Further: Develop a binaural beat experience where you chose the beating frequencies
+            SOUND SYNTHESIS 02: LFO
+            * Based on: https://www.youtube.com/watch?v=hgg3ZBLRH58&list=PL4598D_fuAtchztdvxT7irp941ijUf4Rn&index=12&t=3264s 
+            and 
+            https://www.youtube.com/watch?v=ddVrGY1dveY&list=PL4598D_fuAtchztdvxT7irp941ijUf4Rn&index=13
+            * Research: A Tone.js Synth is an OmniOscillator in an AmplitudeEnvelope (cf: https://tonejs.github.io/docs/15.1.22/classes/Synth.html) —the envelope gives a shape to the waveform which to our ears gives a note its Attack, Decay, Sustain and Release https://www.youtube.com/watch?v=9SMi47AEnSo&t=76s, often visualized like this: https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/ADSR-envelope.svg/640px-ADSR-envelope.svg.png
+            * Go Further: Explore the synths provided by Tone.js (scroll down the left side to "Instruments) https://tonejs.github.io/docs/15.1.22/ and play with the oscillators they contain (as we did here: https://www.youtube.com/watch?v=rgFWlq755V4) to create textures, differences and personalize the sounds they contain "out of the box"
             */
 
 

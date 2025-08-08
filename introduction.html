@@ -14,8 +14,6 @@
 
   <!--import the webpage's stylesheet-->
   <link rel="stylesheet" href="style.css" />
-
-
 </head>
 
 <body>
@@ -31,11 +29,11 @@
     How does the Neanderthal flute produce these variations in sound? It has to do with how <a
       href="https://www.youtube.com/watch?v=cdKa5Mwd3fU">breath oscillates within a
       cylinder</a>
-      </p>
-      <p>
-      In fact all sounds are based on oscillations and the physics
+  </p>
+  <p>
+    In fact all sounds are based on oscillations and the physics
     of these <a href="https://www.youtube.com/watch?v=DOQ1XiDhqkE">can be complex</a>
-</p>
+  </p>
 
   <h2>
     Chaos and Complexity, Resolved
@@ -49,7 +47,7 @@
       Air <a href=https://www.youtube.com/watch?v=BZ9tqArL-6o>oscillates in a cylinder</a>
     </li>
     <li>
-      A <a href=https://www.youtube.com/watch?v=_X72on6CSL0>string is plucked</a> OR
+      A <a href=https://www.youtube.com/watch?v=_X72on6CSL0>string is plucked</a>
     </li>
 
     <ul>
@@ -76,27 +74,98 @@
   </p>
   <blockquote>NOTE: It's worth considering that 11 Hz is far to low for human hearing, which ranges somewhere between 20
     Hz and 20,000 Hz (or 20 kHz) —with a lot of variation among individuals, <a
-      href=https://www.youtube.com/watch?v=PM4WSBZanQQ>especially by age</a>
+      href=https://www.youtube.com/watch?v=PM4WSBZanQQ>especially high frequencies, by age</a>
     <br />
     <b>Be sure your volume is turned down by at least 1/4 when running this test!</b>
   </blockquote>
   <br />
-
-  ////
-
   <p>
-    Sounds produced by physical oscillations are "dirty", containing much more sonic information than the fundamental
-    "tone" or "pitch"
+    Sounds produced by physical oscillations —as opposed to pure, electronic tones, are "dirty", containing much more
+    sonic information than just their fundamental "tone" or "pitch"
+  </p>
+  <p>
+    It's this "noise" that gives sounds richness, texture and makes them so much more palatable than simple electronic
+    signals
   </p>
 
+  <h2>
+    Some Terms
+  </h2>
+  <p>
+    Sound occurs when oscillations travel as waves through a medium (like air)
+  </p>
 
+  <blockquote>NOTE: The air doesn't move, but waves propagate through the air
+  </blockquote>
+  <br />
+  <p>
+    All sound can be described by more or less complex wave forms —the latter represent <a
+      href=https://sail.usc.edu/~lgoldste/General_Phonetics/Waves/Waves>the summation of simpler ones</a>
+  </p>
+  <ul>
+    <li>
+      <b>Wave Forms:</b> We define various waveforms in two main terms
+      <ul>
+        <li>
+          <b>Amplitude:</b> The <a href=https://en.wikipedia.org/wiki/Hertz#Applications>height of the wave</a>
+          (translate as "volume")
+        </li>
+        <li>
+          <b>Frequency:</b> The number of <a href=https://en.wikipedia.org/wiki/Amplitude#Definitions>complete waves in
+            a second of time</a>, which we measure in Hertz or Hz (translate as "pitch")
+        </li>
+      </ul>
 
-  ////
+    <li>
+      <b>Sine Waves:</b> The simplest, mathematically perfect and "pure tones" —almost all of these are created
+      electronically
+    </li>
+    <li>
+      <b>Fundamental:</b> Resembling a sine wave, the lowest and simplest part of a complex tone, minus the overtones
+    </li>
+    <li>
+      <b>Overtones:</b> Multiples of the fundamental, present in greater or lesser strengths within the sound, help to
+      define its overall feel or timber (pronounced <i>tæmbər</i>) —the auditory information that helps us distinguish
+      between a saxophone and a clarinet, for instance
+    </li>
+    <li>
+      <b>Envelope:</b> A term from sound synthesis which attempts to capture aspects of acoustic instruments,
+      specifically
+    </li>
+    <ul>
+      <li>
+        <b>Attack:</b> How the sound begins
+      </li>
+      <li>
+        <b>Decay:</b> How the sound falls off from its initial attack
+      </li>
+      <li>
+        <b>Sustain:</b> How it lasts
+      </li>
+      <li>
+        <b>Release:</b> How it fades
+      </li>
+
+      </li>
+    </ul>
+    <li>
+      <b>Vibrato:</b> Often, but not always, appearing during the sustain, it represents a rapid, subtle variation in
+      pitch which serves to reinforce the fundamental (my theory)
+    </li>
+    <li>
+      <b>Phase: </b> The position of a point within a wave's cycle, measured in degrees (0°-360°) or as a fraction (0-1)
+    </li>
+  </ul>
+
+  <h1>
+    The Course
+  </h1>
+
   <p>
     Specifically, we'll be coding sound for the web<br />
     <br />
-    The course makes use of <a href="https://tonejs.github.io/" target="_blank">Tone.js</a>, a javascript library for
-    addressing the Web Audio API, which can be addressed directly in vanilla javascript<br />
+    The course makes use of <a href="https://tonejs.github.io/" target="_blank">Tone.js</a>, a JavaScript library for
+    addressing the Web Audio API, which can be addressed directly in vanilla JavaScript<br />
     <br />
     What Tone.js offers is <i>structure</i> —specifically it offers common DAW (digital audio workstation) features like
     prebuilt synths, effects and other building blocks to create your audio projects<br />
@@ -113,14 +182,19 @@
   <h2>Structure</h2>
   The course is divided into three sections:
   <ul>
-    <li>Synthesis: Making sounds from pure code</li>
-    <li>Sound files: Playback, Filtering, Alteration of existing audio clips</li>
-    <li>Spatialization: Moving sounds around in 3D space</li>
+    <li><b>Synthesis:</b> Making sounds from pure code</li>
+    <li><b>Sound files:</b> Playback, Filtering, Alteration of existing audio clips</li>
+    <li><b>Spatialization:</b> Moving sounds around in 3D space</li>
   </ul>
 
   We'll be creating playable instruments, generative soundscapes and interactive environments<br />
   <br />
-  </p>
+  Each new concept will come with its own example code, running on this site<br />
+  <br />
+Your task will be to examine the code, manipulate and change it in order to more fully understand it and follow the challenges and other directives embedded in the JavaScript comments in the code to further your skills and comprehension<br />
+<br />
+
+</p>
 
   <!--BOTTOM-->
   <!--Nav Buttons-->

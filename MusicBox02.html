@@ -66,12 +66,13 @@
             <input type="checkbox" />
         </div>
     </div>
-
-    <input type="range" id="pitchShift" min="1" max="5" step="0.1" value="3">
+<br />
     <p>
-        Pitch Slider
-    </p>
+    Pitch Slider
+</p>
 
+    <input type="range" id="pitchShift" min="1" max="5" step="0.1" value="3" style="width: 190px;">
+   
     <!--BOTTOM-->
     <!--Nav Buttons-->
     <div class="button-row">
@@ -108,13 +109,13 @@
             gain: 0.5,
             octaves: 4,
             sensitivity: 0.5,
-            wet: 1,
+            wet: 0.3,
         })
 
         const rev = new Tone.Reverb({
             decay: 6,
-            preDelay: 9,
-            wet: 1,
+            preDelay: 0,
+            wet: 0.75,
         })
 
         //instantiate Synths
@@ -130,24 +131,23 @@
         synths[2].oscillator.type = 'sawtooth';
 
         //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
-        const gain = new Tone.Gain(0.2);
+        const gain = new Tone.Gain(0.3);
 
         //connect each synth to the Feedback Delay, connect that to the Auto Wah, connect that to Gain and send that to the speakers —AGAIN, SET GAIN LOW!
-        synths.forEach(synth => synth.connect(rev));
-        //fbDelay.connect(rev);
-       // rev.connect(autWah);
+        synths.forEach(synth => synth.connect(fbDelay));
+        fbDelay.connect(autWah);
+       autWah.connect(rev);
         rev.connect(gain);
         gain.toDestination();
 
 // get pitchShift
     const slider = document.getElementById("pitchShift");
 
-    let shifter = parseFloat(slider.value);
-
+    let shifter = 3;
 
         //look at the body of the page (HTML) get all the divs that are children of divs (in our HTML we have three divs which are inside (children of) an outer div)) and apply a different note to each
         let $rows = document.body.querySelectorAll('div > div'),
-            notes = [116.41*shifter, 109.8*shifter, 73.3*shifter];
+            notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
             //console.log(notes[0], notes[1], notes[2]);
 
 
@@ -156,7 +156,7 @@
             slider.addEventListener("input", () => {
                     if (slider.value) {
                        shifter = parseFloat(slider.value);
-                            notes = [116.41 * shifter, 109.8 * shifter, 73.3 * shifter];
+                            notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
                         console.log(shifter);
                     }
                 });

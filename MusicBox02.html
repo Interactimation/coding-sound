@@ -71,6 +71,7 @@
     Pitch Slider
 </p>
 
+<!--creates slider, from 1 to 5, incrementing 0.1, defaulting to 3 (with some style)-->
     <input type="range" id="pitchShift" min="1" max="5" step="0.1" value="3" style="width: 190px;">
    
     <!--BOTTOM-->
@@ -126,7 +127,7 @@
         ];
 
         //give each synth a different oscillator
-        synths[0].oscillator.type = 'triangle';
+        synths[0].oscillator.type = 'square';
         synths[1].oscillator.type = 'sine';
         synths[2].oscillator.type = 'sawtooth';
 
@@ -140,7 +141,7 @@
         rev.connect(gain);
         gain.toDestination();
 
-// get pitchShift
+//get pitchShift
     const slider = document.getElementById("pitchShift");
 
     let shifter = 3;
@@ -148,7 +149,9 @@
         //look at the body of the page (HTML) get all the divs that are children of divs (in our HTML we have three divs which are inside (children of) an outer div)) and apply a different note to each
         let $rows = document.body.querySelectorAll('div > div'),
             notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
-            //console.log(notes[0], notes[1], notes[2]);
+
+
+        //console.log(notes[0], notes[1], notes[2]);
 
 
             //if slider value changes, update notes
@@ -157,6 +160,8 @@
                     if (slider.value) {
                        shifter = parseFloat(slider.value);
                             notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
+
+
                         console.log(shifter);
                     }
                 });

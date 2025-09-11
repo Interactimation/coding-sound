@@ -66,19 +66,33 @@
             <input type="checkbox" />
         </div>
     </div>
-<br />
+    <br />
     <p>
-    Pitch Slider
-</p>
+        Pitch Slider
+    </p>
 
-<!--creates slider, from 1 to 5, incrementing 0.1, defaulting to 3 (with some style)-->
+    <!--creates slider, from 1 to 5, incrementing 0.1, defaulting to 3 (with some style)-->
     <input type="range" id="pitchShift" min="1" max="5" step="0.1" value="3" style="width: 190px;">
 
-<br />
-<br />
+    <br />
+    <br />
 
     <!--create a button named rando voce-->
     <button id="rando-btn">Rando Voce</button>
+
+    <br />
+    <br />
+
+    <p>
+Distortion:
+    </p>
+<!--radio buttons control cheby-->
+
+<div style="display:flex; gap:12px; align-items:center;">
+    <label><input type="radio" name="order" value="1" checked> None</label>
+    <label><input type="radio" name="order" value="10"> Type 1</label>
+    <label><input type="radio" name="order" value="19"> Type 2</label>
+</div>
 
 
     <!--BOTTOM-->
@@ -89,6 +103,9 @@
             onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/MusicBox03.html', '_blank')">Code</button>
         <button class="right" onclick="window.open('lesson05.html')">Next</button>
     </div>
+
+    <br />
+    <br />
 
     <!--JAVASCRIPT-->
 
@@ -105,14 +122,14 @@
 
         //SETUP SOME EFFECTS
 
-        //One: FeedbackDelay
+        //FeedbackDelay
         const fbDelay = new Tone.FeedbackDelay({
             delayTime: 0.2,
             feedback: 0.1,
             wet: 0.3,
         });
 
-        //Two: AutoWah
+        //AutoWah
         const autWah = new Tone.AutoWah({
             gain: 0.5,
             octaves: 4,
@@ -120,12 +137,25 @@
             wet: 0.3,
         })
 
+
+        //Reverb
         const rev = new Tone.Reverb({
             decay: 6,
             preDelay: 0,
             wet: 0.75,
         })
 
+        //Chebyshev
+
+        let chebord = 1;
+       
+      let cheby = new Tone.Chebyshev({
+            order: chebord,        
+            oversample: "2x", 
+            wet: 0.3
+        });
+
+        
         //instantiate Synths
         const synths = [
             new Tone.Synth(),
@@ -152,39 +182,36 @@
         synths[2].oscillator.type = voice[v2];
 
         //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
-        const gain = new Tone.Gain(0.3);
+        const gain = new Tone.Gain(0.5);
 
         //connect each synth to the Feedback Delay, connect that to the Auto Wah, connect that to Gain and send that to the speakers —AGAIN, SET GAIN LOW!
         synths.forEach(synth => synth.connect(fbDelay));
         fbDelay.connect(autWah);
-       autWah.connect(rev);
-        rev.connect(gain);
+        autWah.connect(rev);
+        rev.connect(cheby);
+        cheby.connect(gain);
         gain.toDestination();
 
-//get pitchShift
-    const slider = document.getElementById("pitchShift");
+        //get pitchShift
+        const slider = document.getElementById("pitchShift");
 
-    let shifter = 3;
+        let shifter = 3;
 
         //look at the body of the page (HTML) get all the divs that are children of divs (in our HTML we have three divs which are inside (children of) an outer div)) and apply a different note to each
         let $rows = document.body.querySelectorAll('div > div'),
             notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
 
+        //if slider value changes, update notes
 
-        //console.log(notes[0], notes[1], notes[2]);
-
-
-            //if slider value changes, update notes
-           
-            slider.addEventListener("input", () => {
-                    if (slider.value) {
-                       shifter = parseFloat(slider.value);
-                            notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
+        slider.addEventListener("input", () => {
+            if (slider.value) {
+                shifter = parseFloat(slider.value);
+                notes = [174.6 * shifter, 164.8 * shifter, 110 * shifter];
 
 
-                        console.log(shifter);
-                    }
-                });
+                console.log(shifter);
+            }
+        });
 
         //create an index we can increase 
         let index = 0;
@@ -203,6 +230,18 @@
             }
             index++;
         }
+
+        //listen to the radio buttons and chose no distortion (1) or between an even or an odd number
+ 
+         document.querySelectorAll('input[name="order"]').forEach(radio => {
+                radio.addEventListener("change", e => {
+                    if (e.target.checked) {
+                        chebord = parseInt(e.target.value, 10);
+                        cheby.order = chebord;
+                        console.log("chebord =", chebord);
+                    }
+                });
+            });
 
         //get the play button, when it's clicked, if the Tone.context.state is NOT "running" then start it, if it is, then stop it —oh and change the text in the button based on what will happen when it's next clicked!
 
@@ -224,18 +263,18 @@
 
         //get rando button
         const vocBTN = document.getElementById("rando-btn");
-            vocBTN.addEventListener("click", async () => { 
+        vocBTN.addEventListener("click", async () => {
 
-                //pick a random integer between 0 and 3, inclusive 
-                let v0 = Math.floor(Math.random() * 4);
-                let v1 = Math.floor(Math.random() * 4);
-                let v2 = Math.floor(Math.random() * 4);
+            //pick a random integer between 0 and 3, inclusive 
+            let v0 = Math.floor(Math.random() * 4);
+            let v1 = Math.floor(Math.random() * 4);
+            let v2 = Math.floor(Math.random() * 4);
 
-                //give each synth a different oscillator
-                synths[0].oscillator.type = voice[v0];
-                synths[1].oscillator.type = voice[v1];
-                synths[2].oscillator.type = voice[v2];
-            });
+            //give each synth a different oscillator
+            synths[0].oscillator.type = voice[v0];
+            synths[1].oscillator.type = voice[v1];
+            synths[2].oscillator.type = voice[v2];
+        });
 
     </script>
 

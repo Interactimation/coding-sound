@@ -181,8 +181,10 @@ Distortion:
         synths[1].oscillator.type = voice[v1];
         synths[2].oscillator.type = voice[v2];
 
+        let vol = 0.5;
+
         //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
-        const gain = new Tone.Gain(0.5);
+        const gain = new Tone.Gain(vol);
 
         //connect each synth to the Feedback Delay, connect that to the Auto Wah, connect that to Gain and send that to the speakers —AGAIN, SET GAIN LOW!
         synths.forEach(synth => synth.connect(fbDelay));

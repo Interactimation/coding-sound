@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Musebox Recordable 01 "Chunks"</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>MuseBox</h1>
+    <p>Click several spots in the blue square</p>
+    <br />
+    
+<!--REC-->
+    <!--Rec button-->
+    <button id="rec">Start Recording</button>
+<!--REC-->
+    <!--download link-->
+    <a id="dl" style="margin-left:1rem;" download>Download</a>
+
+
+    <!--the canvas-->
+    <div>
+        <canvas id="soundCanvas" width="400" height="400"></canvas>
+        <br />
+        <style>
+            canvas {
+                background-color: rgb(92, 92, 127);
+                display: block;
+                margin: 50px auto;
+                border: 2px solid black;
+            }
+        </style>
+    </div>
+
+
+    <!--JAVASCRIPT-->
+
+    <script>
+
+        //instantiate Synth, send it to the speakers
+        const synth = new Tone.Synth().toDestination();
+
+        // variables for synth volume and Hz
+        let vol = 0; // this will actually be audible (see below)
+        let pitch = 440; //Hz
+
+        //get the canvas by its id and construct it as a variable
+        const scanvas = document.getElementById("soundCanvas");
+
+        //add an event listener to the canvas
+        scanvas.addEventListener("click", e => {
+
+            //here I'm using the first click on the canvas to start Tone
+            if (Tone.context.state !== "running") await
+            Tone.start();
+
+            // get click position relative to scanvas
+            const rect = scanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // map x to a range between -36 and 0, here's why: https://sound.stackexchange.com/questions/25529/what-is-0-db-in-digital-audio
+            const minDb = -36;
+            const maxDb = 0;
+            vol = minDb + (x / scanvas.width) * (maxDb - minDb);
+            synth.volume.value = vol;
+
+            // map y to [130.81, 2093] (invert so top = high pitch)
+            const minHz = 130.81;
+            const maxHz = 2093.0;
+            pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+            //set the volume of the synth to the value of the variable "vol"
+            synth.volume.value = vol;
+            // trigger the synth with the value of the variable "pitch" as where the Hx or concert note (like A4) would go
+            synth.triggerAttackRelease(pitch, "4n");
+
+            //readout values to console
+           console.log("vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+        });
+
+//REC, here down
+//create an array for recording "chunks" of audio of one mimetype or another
+
+    let rec, chunks = [], mime = '';
+    let stream;
+
+// Different browsers support different audio "mime types" so find one that's supported 
+function pickMime(){
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) return 'audio/webm;codecs=opus';
+        if (MediaRecorder.isTypeSupported('audio/mp4')) return 'audio/mp4';
+        if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) return 'audio/ogg;codecs=opus';
+        return ''; // let browser choose
+    }
+
+    //chose file extension for the download link
+    function extFromMime(m) {
+        if (m.includes('webm')) return 'webm';
+        if (m.includes('mp4')) return 'm4a';
+        if (m.includes('ogg')) return 'ogg';
+        return 'webm';
+    }
+
+    //get the button and, on click, if not recording, setup to record
+    document.getElementById('rec').onclick = async () => {
+            // not recording yet -> start
+            if (!rec || rec.state !== 'recording') {
+
+                // 1) get a stream (MIC). To tap WebAudio output, provide your own MediaStream instead.
+                if (!stream) stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // 2) pick mime & make recorder
+                mime = pickMime();
+                rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+                chunks = [];
+
+                // 3) collect data
+                rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+                rec.onstop = () => {
+                    const blob = new Blob(chunks, { type: mime || rec.mimeType });
+                    const url = URL.createObjectURL(blob);
+                    const ext = extFromMime((mime || rec.mimeType).toLowerCase());
+                    const a = document.getElementById('dl');
+                    a.href = url;
+                    a.download = `take.${ext}`;
+                    a.textContent = `Download (${(blob.size / 1024).toFixed(0)} KB)`;
+                };
+
+                // 4) start the recording
+                rec.start(); // omit timeslice -> single blob at stop
+                document.getElementById('rec').textContent = 'Stop Recording';
+            } else {
+                // stop the recording
+                rec.stop();
+                document.getElementById('rec').textContent = 'Start Recording';
+            }
+        };
+
+
+
+    </script>
+
+</body>
+
+</html>

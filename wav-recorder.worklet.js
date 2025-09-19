@@ -12,7 +12,3 @@ class WavRecorder extends AudioWorkletProcessor {
             const ch0 = (inputs[0] && inputs[0][0]) ? inputs[0][0] : new Float32Array(128);
             this.port.postMessage({ type: 'chunk', buffer: ch0.slice(0) });
         }
-        return true;
-    }
-}
-registerProcessor('wav-recorder', WavRecorder);

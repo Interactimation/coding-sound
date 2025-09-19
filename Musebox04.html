@@ -66,9 +66,9 @@
         let recording = false, chunks = [], ctx, node; // ADD
 
         (async () => { // ADD
-            ctx = Tone.getContext(); // ADD
-            await ctx.audioWorklet.addModule('wav-recorder.worklet.js'); // ADD
-            node = new AudioWorkletNode(ctx, 'wav-recorder', { numberOfInputs: 1, numberOfOutputs: 0 }); // ADD
+           const ac = Tone.getContext().rawContext;            // native AudioContext
+            await ac.audioWorklet.addModule('wav-recorder.worklet.js');
+            node = new AudioWorkletNode(ac, 'wav-recorder', { numberOfInputs: 1, numberOfOutputs: 0 }); // ADD
             Tone.Destination.connect(node); // ADD
 
             node.port.onmessage = (e) => { // ADD

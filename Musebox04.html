@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Musebox</title>
+
+    <!--import Tone.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+</head>
+
+<body>
+    <h1>MuseBox</h1>
+    <p>Click several spots in the blue square</p>
+
+    <div>
+        <canvas id="soundCanvas" width="400" height="400"></canvas>
+        <br />
+        <style>
+            canvas {
+                background-color: rgb(92, 92, 127);
+                display: block;
+                margin: 50px auto;
+                border: 2px solid black;
+            }
+        </style>
+    </div>
+
+    <!-- ADD recording controls -->
+    <button id="rec">Start Rec (WAV)</button> <!-- ADD -->
+    <a id="dl" style="margin-left:1rem;" download="take.wav"></a> <!-- ADD -->
+
+    <script>
+        const synth = new Tone.Synth().toDestination();
+
+        let vol = 0;
+        let pitch = 440;
+
+        const scanvas = document.getElementById("soundCanvas");
+
+        scanvas.addEventListener("click", async e => {   // ADD async
+            if (Tone.context.state !== "running") await Tone.start();
+
+            const rect = scanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const minDb = -36;
+            const maxDb = 0;
+            vol = minDb + (x / scanvas.width) * (maxDb - minDb);
+            synth.volume.value = vol;
+
+            const minHz = 130.81;
+            const maxHz = 2093.0;
+            pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+            synth.volume.value = vol;
+            synth.triggerAttackRelease(pitch, "4n");
+
+            console.log("vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+        });
+
+        // ==== WAV RECORDER SETUP ==== // ADD
+        let recording = false, chunks = [], ctx, node; // ADD
+
+        (async () => { // ADD
+            ctx = Tone.getContext(); // ADD
+            await ctx.audioWorklet.addModule('wav-recorder.worklet.js'); // ADD
+            node = new AudioWorkletNode(ctx, 'wav-recorder', { numberOfInputs: 1, numberOfOutputs: 0 }); // ADD
+            Tone.Destination.connect(node); // ADD
+
+            node.port.onmessage = (e) => { // ADD
+                if (e.data.type === 'chunk') chunks.push(e.data.buffer); // ADD
+                if (e.data.type === 'stopped') buildWav(e.data.sampleRate); // ADD
+            }; // ADD
+        })(); // ADD
+
+        document.getElementById('rec').onclick = async () => { // ADD
+            await Tone.start(); // ADD
+            if (!recording) { // ADD
+                chunks = []; // ADD
+                node.port.postMessage({ type: 'start', sampleRate: ctx.sampleRate }); // ADD
+                recording = true; // ADD
+                document.getElementById('rec').textContent = 'Stop Rec (WAV)'; // ADD
+            } else { // ADD
+                node.port.postMessage({ type: 'stop' }); // ADD
+                recording = false; // ADD
+                document.getElementById('rec').textContent = 'Start Rec (WAV)'; // ADD
+            } // ADD
+        }; // ADD
+
+        function buildWav(sampleRate) { // ADD
+            let total = 0; for (const b of chunks) total += b.length; // ADD
+            const pcm16 = new Int16Array(total); // ADD
+            let o = 0; // ADD
+            for (const f of chunks) { // ADD
+                for (let i = 0; i < f.length; i++) { // ADD
+                    let s = Math.max(-1, Math.min(1, f[i])); // ADD
+                    pcm16[o++] = s < 0 ? s * 0x8000 : s * 0x7FFF; // ADD
+                } // ADD
+            } // ADD
+            const bytes = 44 + pcm16.length * 2; // ADD
+            const buf = new ArrayBuffer(bytes); // ADD
+            const v = new DataView(buf); // ADD
+            const w = (off, str) => { for (let i = 0; i < str.length; i++) v.setUint8(off + i, str.charCodeAt(i)); }; // ADD
+            let p = 0; // ADD
+            w(p, 'RIFF'); p += 4; v.setUint32(p, bytes - 8, true); p += 4; // ADD
+            w(p, 'WAVEfmt '); p += 8; v.setUint32(p, 16, true); p += 4; // ADD
+            v.setUint16(p, 1, true); p += 2; v.setUint16(p, 1, true); p += 2; // mono PCM // ADD
+            v.setUint32(p, sampleRate, true); p += 4; v.setUint32(p, sampleRate * 2, true); p += 4; // ADD
+            v.setUint16(p, 2, true); p += 2; v.setUint16(p, 16, true); p += 2; // ADD
+            w(p, 'data'); p += 4; v.setUint32(p, pcm16.length * 2, true); p += 4; // ADD
+            new Int16Array(buf, 44).set(pcm16); // ADD
+            const url = URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })); // ADD
+            const a = document.getElementById('dl'); // ADD
+            a.href = url; a.textContent = `Download WAV (${(buf.byteLength / 1024).toFixed(0)} KB)`; // ADD
+        } // ADD
+        // ==== END WAV RECORDER ==== // ADD
+    </script>
+</body>
+
+</html>

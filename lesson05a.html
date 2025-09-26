@@ -70,7 +70,7 @@
     const fbDelay = new Tone.FeedbackDelay({
       delayTime: 0.1,
       feedback: 0.1,
-      wet: 0.3,
+      wet: 0.1,
     });
 
     //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
@@ -82,7 +82,7 @@
     })
 
     //instantiate Synth
-    const synth = new Tone.Synth().connect(fbDelay)
+    let synth = new Tone.Synth().connect(fbDelay)
 
     //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
     const gain = new Tone.Gain(0.5);
@@ -102,32 +102,22 @@
       synth.triggerAttackRelease(key.frequency, "8n")
     })
 
-
-    //ADD 
-// Arrow Key Listener
-
-  document.addEventListener("keydown", function(e){
-if (e.key === "ArrowUp"){
-  gain.gain.value += 0.1;
-  console.log("this is the up arrow: " + gain.gain.value);
-} else if (e.key === "ArrowDown"){
-  console.log("this is the down arrow: "  );
-  
-}
-else if (e.key === "ArrowLeft"){
-   console.log("this is the left arrow:");
-}
-else if (e.key === "ArrowRight") { 
-   console.log("this is the right arrow:");
-}
+//ADDed by Mark 
 
 
-} );
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowUp") {
+            console.log("Up arrow pressed");
+        } else if (e.key === "ArrowDown") {
+            console.log("Down arrow pressed");
+        } else if (e.key === "ArrowLeft") {
+            console.log("Left arrow pressed");
+        } else if (e.key === "ArrowRight") {
+            console.log("Right arrow pressed");
+        }
+    });
 
-
-
-
-</script>
+  </script>
 
 </body>
 

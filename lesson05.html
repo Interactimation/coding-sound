@@ -67,10 +67,10 @@
     //SETUP SOME EFFECTS
 
     //One: FeedbackDelay, two constructors: the simple version is commented out, notice that I've changed some values since last time I used this
-    const fbDelay = new Tone.FeedbackDelay({
+    let fbDelay = new Tone.FeedbackDelay({
       delayTime: 0.1,
       feedback: 0.1,
-      wet: 0.3,
+      wet: 0.5,
     });
 
     //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
@@ -110,15 +110,37 @@
 if (e.key === "ArrowUp"){
   gain.gain.value += 0.1;
   console.log("this is the up arrow: " + gain.gain.value);
+
+if(gain.gain.value >= 2){
+  gain.gain.value = 2;
+    console.log("this is the up arrow: " + gain.gain.value);
+
+}
+
 } else if (e.key === "ArrowDown"){
-  console.log("this is the down arrow: "  );
-  
+ gain.gain.value -= 0.1;
+  console.log("this is the down arrow: " + gain.gain.value);
+  if (gain.gain.value <= 0.1) {
+    gain.gain.value = 0.1;
+    console.log("this is the down arrow: " + gain.gain.value);
+  }
 }
 else if (e.key === "ArrowLeft"){
+  fbDelay.wet.value -= 0.1;
    console.log("this is the left arrow:");
+   if (fbDelay.wet.value  <= 0.0000000000009){
+     fbDelay.wet.value === 0.0000000000009;
+
+   }
 }
 else if (e.key === "ArrowRight") { 
+  fbDelay.wet.value += 0.1;
    console.log("this is the right arrow:");
+
+      if (fbDelay.wet.value >= 0.9999999999999) {
+    fbDelay.wet.value ===  0.9999999999999;
+
+  }
 }
 
 

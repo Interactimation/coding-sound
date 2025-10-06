@@ -66,11 +66,12 @@
 
     //SETUP SOME EFFECTS
 
+
     //One: FeedbackDelay, two constructors: the simple version is commented out, notice that I've changed some values since last time I used this
     let fbDelay = new Tone.FeedbackDelay({
       delayTime: 0.1,
       feedback: 0.1,
-      wet: 0.5,
+      wet: 0.5
     });
 
     //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
@@ -105,52 +106,50 @@
 
 
     //ADD 
-// Arrow Key Listener
+    // Arrow Key Listener
 
-  document.addEventListener("keydown", function(e){
-if (e.key === "ArrowUp"){
-  gain.gain.value += 0.1;
-  console.log("this is the up arrow: " + gain.gain.value);
+    document.addEventListener("keydown", function (e) {
 
-if(gain.gain.value >= 2){
-  gain.gain.value = 2;
-    console.log("this is the up arrow: " + gain.gain.value);
+      //arrow up raises gain by 0.1
+      if (e.key === "ArrowUp") {
+        gain.gain.value += 0.1;
+        console.log("this is the up arrow: " + gain.gain.value);
+        //if gain reaches 2 or higher, it's set to 2
+        if (gain.gain.value >= 2) {
+          gain.gain.value = 2;
+          console.log("this is the up arrow: " + gain.gain.value);
 
-}
+        }
+        //down arrow lowers gain by 0.1
+      } else if (e.key === "ArrowDown") {
+        gain.gain.value -= 0.1;
+        console.log("this is the down arrow: " + gain.gain.value);
+        //if gain reaches 0.1 or lower, it's set to 0.1
+        if (gain.gain.value <= 0.1) {
+          gain.gain.value = 0.1;
+          console.log("this is the down arrow: " + gain.gain.value);
+        }
+      }
 
-} else if (e.key === "ArrowDown"){
- gain.gain.value -= 0.1;
-  console.log("this is the down arrow: " + gain.gain.value);
-  if (gain.gain.value <= 0.1) {
-    gain.gain.value = 0.1;
-    console.log("this is the down arrow: " + gain.gain.value);
-  }
-}
-else if (e.key === "ArrowLeft"){
-  fbDelay.wet.value -= 0.1;
-   console.log("this is the left arrow:");
-   if (fbDelay.wet.value  <= 0.1){
-     fbDelay.wet.value === 0.1;
+      //if the fbDelay > 0.2 left arrow left reduces by 0.1
+      else if (e.key === "ArrowLeft" && fbDelay.wet.value >= 0.2) {
+        fbDelay.wet.value -= 0.1;
+        console.log("this is the left arrow: " + fbDelay.wet.value);
+      }
 
-   }
-}
-else if (e.key === "ArrowRight") { 
-  fbDelay.wet.value += 0.1;
-   console.log("this is the right arrow:");
-
-      if (fbDelay.wet.value >= 1) {
-    fbDelay.wet.value ===  1;
-
-  }
-}
+      //if the fbDelay < 0.08 arrow right increases fbDelay wet by 0.1
+      else if (e.key === "ArrowRight" && fbDelay.wet.value <= 0.8) {
+        fbDelay.wet.value += 0.1;
+        console.log("this is the right arrow: " + fbDelay.wet.value);
+      }
 
 
-} );
+    });
 
 
 
 
-</script>
+  </script>
 
 </body>
 

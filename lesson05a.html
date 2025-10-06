@@ -66,11 +66,12 @@
 
     //SETUP SOME EFFECTS
 
+
     //One: FeedbackDelay, two constructors: the simple version is commented out, notice that I've changed some values since last time I used this
-    const fbDelay = new Tone.FeedbackDelay({
+    let fbDelay = new Tone.FeedbackDelay({
       delayTime: 0.1,
       feedback: 0.1,
-      wet: 0.1,
+      wet: 0.5
     });
 
     //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
@@ -82,15 +83,16 @@
     })
 
     //instantiate Synth
-    let synth = new Tone.Synth().connect(fbDelay)
+    const synth = new Tone.Synth().connect(fbDelay)
 
     //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
     const gain = new Tone.Gain(0.5);
 
     //connect each synth to the Feedback Delay, connect that to the Auto Wah, connect that to Gain and send that to the speakers —AGAIN, SET GAIN LOW!
 
-    fbDelay.connect(autWah);
-    autWah.connect(gain);
+    //fbDelay.connect(autWah);
+    //autWah.connect(gain);
+    fbDelay.connect(gain);
     gain.toDestination();
 
     const keyboard = new AudioKeys({
@@ -102,20 +104,60 @@
       synth.triggerAttackRelease(key.frequency, "8n")
     })
 
-//ADDed by Mark 
 
+    //ADD 
+
+
+    //LFO the three arguments are Hz, followed by the minimum and maximum "output values" which describe the low and high points of the waveform which we might normally associate with "volume"
+    
+    let lfo1 = new Tone.LFO(2, 10, 30);
+    lfo1.connect(synth.volume);
+    lfo1.start();
+
+
+
+    // Arrow Key Listener
 
     document.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowUp") {
-            console.log("Up arrow pressed");
-        } else if (e.key === "ArrowDown") {
-            console.log("Down arrow pressed");
-        } else if (e.key === "ArrowLeft") {
-            console.log("Left arrow pressed");
-        } else if (e.key === "ArrowRight") {
-            console.log("Right arrow pressed");
+
+      //arrow up raises gain by 0.1
+      if (e.key === "ArrowUp") {
+        gain.gain.value += 0.1;
+        console.log("this is the up arrow: " + gain.gain.value);
+        //if gain reaches 2 or higher, it's set to 2
+        if (gain.gain.value >= 2) {
+          gain.gain.value = 2;
+          console.log("this is the up arrow: " + gain.gain.value);
+
         }
+        //down arrow lowers gain by 0.1
+      } else if (e.key === "ArrowDown") {
+        gain.gain.value -= 0.1;
+        console.log("this is the down arrow: " + gain.gain.value);
+        //if gain reaches 0.1 or lower, it's set to 0.1
+        if (gain.gain.value <= 0.1) {
+          gain.gain.value = 0.1;
+          console.log("this is the down arrow: " + gain.gain.value);
+        }
+      }
+
+      //arrow left reduces fbDelay wet by 0.1
+      else if (e.key === "ArrowLeft" && fbDelay.wet.value >= 0.2) {
+        fbDelay.wet.value -= 0.1;
+        console.log("this is the left arrow: " + fbDelay.wet.value);
+      }
+
+      //arrow right increases fbDelay wet by 0.1
+      else if (e.key === "ArrowRight" && fbDelay.wet.value <= 0.8) {
+        fbDelay.wet.value += 0.1;
+        console.log("this is the right arrow: " + fbDelay.wet.value);
+      }
+
+
     });
+
+
+
 
   </script>
 

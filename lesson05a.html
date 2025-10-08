@@ -64,6 +64,10 @@
     * Go Further: Follow this tutorial: https://www.youtube.com/watch?v=IT64QQo3jrM —it uses SASS, an extension of CSS: https://sass-lang.com/
     */
 
+
+
+
+
     //SETUP SOME EFFECTS
 
 
@@ -82,8 +86,11 @@
       wet: 1,
     })
 
+
     //instantiate Synth
     const synth = new Tone.Synth().connect(fbDelay)
+
+
 
     //gain is incredibly important here, without this rather low setting, the sounds created by different oscillators could be ear-splitting and even damage speakers
     const gain = new Tone.Gain(0.5);
@@ -110,7 +117,7 @@
 
     //LFO the three arguments are Hz, followed by the minimum and maximum "output values" which describe the low and high points of the waveform which we might normally associate with "volume"
     
-    let lfo1 = new Tone.LFO(2, 10, 30);
+    let lfo1 = new Tone.LFO(10, 4, 12);
     lfo1.connect(synth.volume);
     lfo1.start();
 

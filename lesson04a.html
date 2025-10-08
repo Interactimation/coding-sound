@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="codingSoundFavicon.ico" />
+
+  <title>Lesson 04</title>
+
+  <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+  <!--import the webpage's stylesheet-->
+  <link rel="stylesheet" href="style.css" />
+
+  <!--import the webpage's javascript file-->
+  
+</head>
+
+<body>
+  <!-- this is the start of content -->
+  <h1>Step Sequencer</h1>
+
+  <!--create a button named play-btn-->
+  <button id="play-btn">Play</button>
+
+  
+  <!--BOTTOM-->
+  <!--Nav Buttons-->
+  <div class="button-row">
+    <button class="left" onclick="location.href='index.html'">ToC</button>
+    <button class="center"
+      onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson04.html', '_blank')">Code</button>
+    <button class="right" onclick="window.open('lesson05.html')">Next</button>
+  </div>
+
+  <!--JAVASCRIPT-->
+
+  <script>
+
+////USEFUL BIT OF CODE
+//self-calling function: print defaults for an instrument, effect, etc. to console
+    (() => {
+        console.log(Tone.FMSynth.getDefaults());
+    })();
+
+//gain  
+    const gain = new Tone.Gain(0.5);
+//synth
+    const fmSynth = new Tone.FMSynth().connect(gain);
+//send gain to destination
+    gain.toDestination();
+
+    const playBTN = document.getElementById("play-btn").addEventListener("click", () => {
+        if (Tone.context.state !== "running") {
+            Tone.start();
+        }
+
+        fmSynth.triggerAttackRelease("C3", "4n");
+    })
+
+
+    //get the play button, when it's clicked, if the Tone.context.state is NOT "running" then start it, if it is, then stop it —oh and change the text in the button based on what will happen when it's next clicked!
+
+    /*const playBTN = document.getElementById("play-btn");
+    let isPlaying = false;
+    playBTN.addEventListener("click", async () => {
+      await Tone.start(); // ensures context is unlocked on any click
+
+      if (!isPlaying) {
+        Tone.Transport.start();
+        playBTN.textContent = "Pause";
+        isPlaying = true;
+        fmSynth.triggerAttackRelease("C3", "4n");
+      } else {
+        Tone.Transport.pause();
+        playBTN.textContent = "Play";
+        isPlaying = false;
+      }
+    });
+*/
+  </script>
+
+</body>
+
+</html>

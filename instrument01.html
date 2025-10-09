@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="codingSoundFavicon.ico" />
+
+  <title>Instrument01</title>
+
+  <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+  <!--import AudioKeys-->
+
+  <script src="https://cdn.jsdelivr.net/gh/kylestetz/AudioKeys@master/dist/audiokeys.min.js"></script>
+
+
+  <!--import the webpage's stylesheet-->
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+  <!-- this is the start of content -->
+  <h1>Instrument Project 01</h1>
+  <h3><i>Steel Drum</i></h3>
+
+
+  <p>Play these black or white keys on your computer keyboard<br />
+    (not designed for mobile devices or touch screens)</p>
+  <img
+    src="https://camo.githubusercontent.com/9a2b15e8cc0b9f85d9a21f46fe250a2b6e5b1d7a4abe410afdcc39f9f467c487/68747470733a2f2f7261772e6769746875622e636f6d2f6b796c65737465747a2f617564696f6b6579732f6d61737465722f696d616765732f617564696f6b6579732d6d617070696e672d726f7773322e6a7067"
+    alt="keyboard layout" style="width:80%">
+
+
+
+
+  <!--BOTTOM-->
+  <!--Nav Buttons-->
+  <div class="button-row">
+    <button class="left" onclick="location.href='index.html'">ToC</button>
+    <button class="center"
+        onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/instrument01.html', '_blank')">Code</button>
+    <button class="right" onclick="window.open('instrument02.html')">Next</button>
+  </div>
+
+  <!--JAVASCRIPT-->
+
+  <script>
+
+    /* 
+    instrument01 - steel drum
+    */
+
+
+    //SETUP SOME EFFECTS
+
+
+    //One: FeedbackDelay, two constructors: the simple version is commented out, notice that I've changed some values since last time I used this
+    let fbDelay = new Tone.FeedbackDelay({
+      delayTime: 0.1,
+      feedback: 0.1,
+      wet: 0.5
+    });
+
+    //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
+    const autWah = new Tone.AutoWah({
+      gain: 0.5,
+      octaves: 4,
+      sensitivity: 0.5,
+      wet: 1,
+    })
+
+    //instantiate FMSynth
+    const modSynth = new Tone.FMSynth({
+        harmonicity: 3,
+        modulationIndex: 10,
+        detune: 0,
+        oscillator: { type: "sine" },
+        modulation: { type: "sine" },
+        envelope: {
+          attack: 0.01,
+          decay: 0.3,
+          sustain: 1,
+          srelease: 0.5
+        },
+        modulationEnvelope: {
+          attack: 0.05,
+          decay: 3,
+          sustain: 0,
+          release: 3
+        }
+      }).connect(fbDelay)
+
+
+
+    //gain is set fairly low and the up arrow will only raise it to 0.5 as volume is an issue here
+    const gain = new Tone.Gain(0.3);
+
+    //the patch bay, or chain of inputs/outputs
+    fbDelay.connect(autWah);
+    autWah.connect(gain);
+    gain.toDestination();
+
+    //the AudioKeys keyboard
+    const keyboard = new AudioKeys({
+      rows: 2,
+    });
+
+    keyboard.down((key) => {
+      console.log(key);
+      modSynth.triggerAttackRelease(key.frequency, "8n")
+    })
+
+    //create an LFO and let it modulate the volume of the FMSynth
+    
+    let lfo1 = new Tone.LFO(16, 3, 12);
+    lfo1.connect(modSynth.volume);
+    lfo1.start();
+
+
+
+    // Arrow Key Listener, change volume and wetness of fbDelay
+
+    document.addEventListener("keydown", function (e) {
+
+      //arrow up raises gain by 0.1
+      if (e.key === "ArrowUp") {
+        gain.gain.value += 0.05;
+        console.log("this is the up arrow: " + gain.gain.value);
+        //if gain reaches 2 or higher, it's set to 2
+        if (gain.gain.value >= 0.5) {
+          gain.gain.value = 0.5;
+          console.log("this is the up arrow: " + gain.gain.value);
+
+        }
+        //down arrow lowers gain by 0.1
+      } else if (e.key === "ArrowDown") {
+        gain.gain.value -= 0.1;
+        console.log("this is the down arrow: " + gain.gain.value);
+        //if gain reaches 0.1 or lower, it's set to 0.1
+        if (gain.gain.value <= 0.1) {
+          gain.gain.value = 0.1;
+          console.log("this is the down arrow: " + gain.gain.value);
+        }
+      }
+
+      //arrow left reduces fbDelay wet by 0.1
+      else if (e.key === "ArrowLeft" && fbDelay.wet.value >= 0.2) {
+        fbDelay.wet.value -= 0.1;
+        console.log("this is the left arrow: " + fbDelay.wet.value);
+      }
+
+      //arrow right increases fbDelay wet by 0.1
+      else if (e.key === "ArrowRight" && fbDelay.wet.value <= 0.8) {
+        fbDelay.wet.value += 0.1;
+        console.log("this is the right arrow: " + fbDelay.wet.value);
+      }
+
+
+    });
+
+
+
+
+  </script>
+
+</body>
+
+</html>

@@ -104,7 +104,7 @@
             osc2.connect(gain);
 
             //LFO the three arguments are Hz, followed by the minimum and maximum "output values" which describe the low and high points of the waveform which we might normally associate with "volume"
-            let lfo1 = new Tone.LFO(2, 100, 440);
+            let lfo1 = new Tone.LFO(3, 100, 440);
             lfo1.connect(osc1.frequency);
             lfo1.start();
     

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Recording01</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+    <!--import the webpage's javascript file-->
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>Recording01</h1>
+
+    <!--create a button named play-btn-->
+
+    <button id="am-btn">AM Play</button>
+    <button id="fm-btn">FM Play</button>
+    <br />
+    <br />
+
+    <!--Audio Controls-->
+    <audio controls></audio>
+
+    <!--BOTTOM-->
+    <!--Nav Buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson09.html', '_blank')">Code</button>
+        <button class="right" onclick="window.open('lesson10.html')">Next</button>
+    </div>
+
+    <!--JAVASCRIPT-->
+
+    <script>
+
+
+
+        ////USEFUL BIT OF CODE
+        //self-calling function: print defaults for an instrument, effect, etc. to console
+        (() => {
+
+            console.log("AM Defaults");
+            console.log(Tone.AMSynth.getDefaults());
+            console.log("FM Defaults");
+            console.log(Tone.FMSynth.getDefaults());
+        })();
+
+        //gain  
+        const gain = new Tone.Gain(0.5);
+        //fmsynth
+        const fmSynth = new Tone.FMSynth({}).connect(gain);
+        //amsynth
+        const amSynth = new Tone.AMSynth({
+            harmonicity: 3,
+            detune: 0,
+            oscillator: {
+                type: "sine",
+            },
+            envelope: {
+                attack: 0.01,
+                decay: 0.01,
+                sustain: 1,
+                release: 0.5
+            },
+            modulation: {
+                type: "square"
+            },
+            modulationEnvelope: {
+                attack: 0.1,
+                decay: 0,
+                sustain: 0,
+                release: 0.5
+            }
+        }).connect(gain);
+        //send gain to destination
+        gain.toDestination();
+
+        const playAM = document.getElementById("am-btn").addEventListener("click", () => {
+            if (Tone.context.state !== "running") {
+                Tone.start();
+            }
+
+            amSynth.triggerAttackRelease("C4", "2n");
+        })
+
+
+
+        const playFM = document.getElementById("fm-btn").addEventListener("click", () => {
+            if (Tone.context.state !== "running") {
+                Tone.start();
+            }
+
+            fmSynth.triggerAttackRelease("C#5", "2n");
+        })
+
+////RECORDER
+    // get the page's audio element
+    const audio = document.querySelector('audio');
+    // get the tone context
+    const tcon = Tone.context;
+    //create a destination for the media stream of the tcon
+    const dest = tcon.createMediaStreamDestination();
+    //create a recorder of the dest stream
+    const recorder = new MediaRecorder(dest.stream);
+    amSynth.connect(dest);
+    fmSynth.connect(dest);
+
+
+    //console.log(tcon);
+
+
+    </script>
+
+</body>
+
+</html>

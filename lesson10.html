@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 10</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+<!--a div to hold our buttons-->
+<div id="pads" class="grid"></div>
+
+<!--css style for our div-->
+<style>
+/*a custom property: the number of columns and rows in the grid*/
+/*PRO TIP: change the value of --n to 5 and —below, in the "notes" array— change the number of items in the array to something divisible by 5... or do this with 6 and its multiples, etc */
+    :root {
+        --n: 4;
+    }
+/*use the custom property to divide the grid into as many columns and rows as the value of --n*/
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(var(--n), 1fr);
+        gap: 8px;
+        width: 90vmin;
+        height: 90vmin;
+        /*keeps the page from scrolling with a touch*/
+        touch-action: none;
+    }
+/*within the grid, individual "pads"*/
+    .pad {
+        border-radius: 12px;
+        background: green;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /*next two lines keep the text from being selectable, even on older browsers*/
+        user-select: none;
+        -webkit-user-select: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, .2
+        );
+        
+    }
+/*when pat is being touched or clicked*/
+    .pad.active {
+        transform: scale(.97);
+        filter: brightness(.9);
+    }
+</style>
+
+<script>
+
+    //an array of notes PRO TIP: this number of these is related to the value of --n (see pro tip, above) 
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+    //set the gain a little lower
+    synth.volume.value = Tone.gainToDb(0.7);
+    const notes = [
+        "C4", "D4", "E4", "G4",
+        "A4", "B4", "C5", "D5",
+        "E5", "G5", "A5", "B5",
+        "C6", "D6", "E6", "G6"
+    ];
+
+    //go thought the array "notes" and create a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
+    const grid = document.getElementById('pads');
+    notes.forEach((n, i) => {
+        const d = document.createElement('div');
+        d.className = 'pad'
+        d.textContent = n; d.dataset.note = n; grid.appendChild(d);
+    });
+
+    // to avoid autoplay (forbidden) and to keep the user from having to click once before anything plays, we can use this self-calling function —alternately we could have something like an "on" button that triggers Tone.start
+    const resumeOnce = () => { Tone.start(); window.removeEventListener('pointerdown', resumeOnce); };
+    window.addEventListener('pointerdown', resumeOnce, { once: true });
+
+    // create a map
+    const downNotesByPointer = new Map(); 
+
+    // listen for clicks or touches and use the map to trigger the correct note
+    grid.addEventListener('pointerdown', e => {
+        const pad = e.target.closest('.pad'); if (!pad) return;
+        e.preventDefault(); pad.setPointerCapture(e.pointerId);
+        const note = pad.dataset.note;
+        downNotesByPointer.set(e.pointerId, { note, pad });
+        pad.classList.add('active');
+        synth.triggerAttack(note);
+    });
+
+    //same as above but release the note when the mouse of ringer leaves the pad
+    function releasePointer(e) {
+        const rec = downNotesByPointer.get(e.pointerId);
+        if (!rec) return;
+        synth.triggerRelease(rec.note);
+        rec.pad.classList.remove('active');
+        downNotesByPointer.delete(e.pointerId);
+    }
+      // if finger drags off pad, still release when it lifts:
+    grid.addEventListener('pointerup', releasePointer);
+    grid.addEventListener('pointercancel', releasePointer);
+    grid.addEventListener('pointerleave', e => {
+        // we don't need anything here
+    });
+   
+</script>
+</head>
+<body>
+<body>
+    <!-- this is the start of content -->
+    <h1>Interfaces 01: Launch Pads</h1>
+
+</body>
+</html>

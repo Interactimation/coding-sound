@@ -69,14 +69,13 @@ background-color: white;
     <button id="play-btn">Play</button>
     <br />
 
-
-
-<button class="button button1">Green</button>
-<button class="button button2">Blue</button>
+<button id="btn1" class="button button1">Green</button>
+<button id="btn2" class="button button2">Blue</button>
 
 <script>
         console.log(Tone.Synth.getDefaults());
         const gain = new Tone.Gain(0.7);
+        gain.toDestination();
 
         const metal = new Tone.MetalSynth({
             frequency: 200,
@@ -92,11 +91,21 @@ background-color: white;
             volume: 0
         }).connect(gain);
 
+    const greenBtn = document.getElementById("btn1");
+    greenBtn.addEventListener("click", () => {
 
 
-    console.log(Tone.Synth.getDefaults());
-    const gain = new Tone.Gain(0.7);
+            metal.triggerAttackRelease("C3", "8n");
+            console.log("green");
+        });
 
+     const blueBtn = document.getElementById("btn2");
+    blueBtn.addEventListener("click", () => {
+          
+
+            metal.triggerAttack("D3", "8n");
+             console.log("blue");
+        });
 
     const playBTN = document.getElementById("play-btn");
     let isPlaying = false;

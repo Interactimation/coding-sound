@@ -33,21 +33,6 @@
     const gain = new Tone.Gain(0.7);
 
 
-    const playBTN = document.getElementById("play-btn");
-    let isPlaying = false;
-    playBTN.addEventListener("click", async () => {
-        await Tone.start(); // ensures context is unlocked on any click
-
-        if (!isPlaying) {
-            Tone.Transport.start();
-            playBTN.textContent = "Pause";
-            isPlaying = true;
-        } else {
-            Tone.Transport.pause();
-            playBTN.textContent = "Play";
-            isPlaying = false;
-        }
-    });
 
 </script>
 

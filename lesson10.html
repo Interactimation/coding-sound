@@ -33,18 +33,20 @@
 /*within the grid, individual "pads"*/
     .pad {
         border-radius: 12px;
-        background: green;
+        background: pink;
         display: flex;
         align-items: center;
         justify-content: center;
         /*next two lines keep the text from being selectable, even on older browsers*/
         user-select: none;
         -webkit-user-select: none;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, .2
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3
+
+
         );
         
     }
-/*when pat is being touched or clicked*/
+/*when pad is being touched or clicked*/
     .pad.active {
         transform: scale(.97);
         filter: brightness(.9);
@@ -58,13 +60,13 @@
     //set the gain a little lower
     synth.volume.value = Tone.gainToDb(0.7);
     const notes = [
-        "C4", "D4", "E4", "G4",
+        "C4", "D3", "E4", "G4",
         "A4", "B4", "C5", "D5",
         "E5", "G5", "A5", "B5",
         "C6", "D6", "E6", "G6"
     ];
 
-    //go thought the array "notes" and create a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
+    //go through the array "notes" and create a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
     const grid = document.getElementById('pads');
     notes.forEach((n, i) => {
         const d = document.createElement('div');
@@ -106,7 +108,7 @@
    
 </script>
 </head>
-<body>
+
 <body>
     <!-- this is the start of content -->
     <h1>Interfaces 01: Launch Pads</h1>

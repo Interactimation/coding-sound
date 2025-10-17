@@ -10,21 +10,48 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
 
-<script>
-    const gain = new Tone.Gain(0.7);
 
-</script>
-
-</head>
-<body>
-    <!-- this is the start of content -->
-    <h1>Seminar 01: Instrument Intensive</h1>
 
 <style>
-    
-    
+
+
 </style>
 
 
+
+</head>
+<body>
+   
+    <h1>Seminar 01: Instrument Intensive</h1>
+
+    <button id="play-btn">Play</button>
+    <br />
+
+
+<script>
+    console.log(Tone.Synth.getDefaults());
+    const gain = new Tone.Gain(0.7);
+
+
+    const playBTN = document.getElementById("play-btn");
+    let isPlaying = false;
+    playBTN.addEventListener("click", async () => {
+        await Tone.start(); // ensures context is unlocked on any click
+
+        if (!isPlaying) {
+            Tone.Transport.start();
+            playBTN.textContent = "Pause";
+            isPlaying = true;
+        } else {
+            Tone.Transport.pause();
+            playBTN.textContent = "Play";
+            isPlaying = false;
+        }
+    });
+
+</script>
+
 </body>
+
+
 </html>

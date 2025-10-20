@@ -13,6 +13,50 @@
 
 
 <style>
+.button {
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.button1 {
+  background-color: white;
+  color: black;
+  border: 2px solid #04AA6D;
+}
+
+.button1:hover {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.button1:active {
+  background-color: darkgreen;
+  color: white;
+}
+
+.button2 {
+  background-color: white;
+  color: black;
+  border: 2px solid #008CBA;
+}
+
+.button2:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+.button2:active {
+  background-color: darkblue;
+  color: white;
+}
 
 
 </style>
@@ -26,12 +70,42 @@
 
     <button id="play-btn">Play</button>
     <br />
-
+<button id="button1" class="button button1">Green</button>
+<button id="button2"class="button button2">Blue</button>
 
 <script>
-    console.log(Tone.Synth.getDefaults());
-    const gain = new Tone.Gain(0.7);
 
+    console.log(Tone.MetalSynth.getDefaults());
+    const gain = new Tone.Gain(0.7);
+    const synth1 = new Tone.MetalSynth({
+            frequency: 200,
+            envelope: { attack: 0.1, attackCurve
+                :
+                "exponential", decay: 1.4, release: 0.2 },
+            harmonicity: 5.1,
+            modulationIndex: 32,
+            resonance: 4000,
+            octaves: 1.5
+        });
+    const synth2 = new Tone.MembraneSynth();
+
+    synth1.connect(gain);
+    synth2.connect(gain);
+gain.toDestination();
+
+
+    const btn1 = document.getElementById("button1");
+    btn1.addEventListener("click", async () => {
+        synth1.triggerAttackRelease('C4', '8n');
+
+    });
+
+     const btn2 = document.getElementById("button2");
+        btn2.addEventListener("click", async () => {
+            synth2.triggerAttackRelease('A2', '4n');
+
+        });
+       
 
 
 </script>

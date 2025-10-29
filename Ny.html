@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Assignment One – “Music Box”</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+  <style>
+    :root {
+      --bg: #0e1222;
+      --panel: #151a2b;
+      --text: #f5f7ff;
+      --muted: #a7adc2;
+      --accent: #7dd3fc;
+      --ring: rgba(125, 211, 252, .25);
+      --border: rgba(255, 255, 255, .12);
+      --chip: rgba(125, 211, 252, .08);
+    }
+
+    [data-theme="light"] {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #0b1020;
+      --muted: #54607a;
+      --accent: #0369a1;
+      --ring: rgba(3, 105, 161, .2);
+      --border: rgba(0, 0, 0, .08);
+      --chip: rgba(3, 105, 161, .08);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      padding: 28px;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 15% -10%, #1a1f45 0%, var(--bg) 60%);
+    }
+
+    [data-theme="light"] body {
+      background: radial-gradient(1200px 700px at 15% -10%, #d7e8ff 0%, var(--bg) 60%);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: .3px
+    }
+
+    .sub {
+      margin: 6px 0 18px;
+      color: var(--muted)
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+      padding: 18px;
+      max-width: 1200px;
+      margin: 0 auto 18px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px
+    }
+
+    @media(min-width:1100px) {
+      .controls {
+        grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        align-items: end
+      }
+    }
+
+    button {
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+      background: linear-gradient(180deg, #24284a, #14182f);
+      transition: box-shadow .15s, border-color .15s, transform .05s;
+    }
+
+    [data-theme="light"] button {
+      background: #f2f4fb;
+    }
+
+    button:hover {
+      box-shadow: 0 8px 18px var(--ring);
+      border-color: var(--ring)
+    }
+
+    button:active {
+      transform: translateY(1px)
+    }
+
+    .primary {
+      background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+      color: #04131e;
+      border: none
+    }
+
+    .danger {
+      background: linear-gradient(180deg, #fb7185, #ef4444);
+      color: #2b0a0e;
+      border: none
+    }
+
+    .ghost {
+      background: transparent
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    input[type="range"] {
+      width: 220px
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"],
+    textarea {
+      background: #0f1327;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    [data-theme="light"] select,
+    [data-theme="light"] input,
+    [data-theme="light"] textarea {
+      background: #f6f8ff;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--chip)
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .bar {
+      height: 10px;
+      background: #0c0f1f;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden
+    }
+
+    [data-theme="light"] .bar {
+      background: #e9eeff
+    }
+
+    .bar>div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #93c5fd)
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px
+    }
+
+    @media(min-width:900px) {
+      .grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .seq {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 4px;
+      background: #0c0f1f;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border)
+    }
+
+    [data-theme="light"] .seq {
+      background: #eef2ff
+    }
+
+    .step {
+      height: 22px;
+      border-radius: 6px;
+      background: #0a0d1d;
+      border: 1px solid var(--border);
+      position: relative
+    }
+
+    [data-theme="light"] .step {
+      background: #fff
+    }
+
+    .step.active::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(56, 189, 248, .35)
+    }
+
+    .help h3 {
+      margin: 0 0 8px
+    }
+
+    .help p,
+    .help li {
+      color: var(--muted)
+    }
+
+    .kbd {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      background: #0c0f1f;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #cbd5e1;
+      font-size: 12px
+    }
+
+    [data-theme="light"] .kbd {
+      background: #eef2ff;
+      color: #334155
+    }
+
+    .right {
+      margin-left: auto
+    }
+
+    .inline {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .hide {
+      display: none
+    }
+
+    textarea {
+      min-height: 120px;
+      width: 100%
+    }
+  </style>
+</head>
+
+<body data-theme="dark">
+  <div class="card">
+    <div class="row" style="margin-bottom:6px">
+      <h1>Assignment One – “Music Box”</h1>
+      <span class="right inline">
+        <button id="themeBtn" class="ghost">🌗 Theme</button>
+        <a class="badge" href="https://tonejs.github.io/" target="_blank" rel="noreferrer">Built with Tone.js</a>
+      </span>
+    </div>
+    <p class="sub">A compact step-based generative music box with scales, accents, swing/humanize, filter+reverb,
+      repeatable randomness, recording, and presets.</p>
+
+    <!-- Transport row -->
+    <div class="row" style="margin-bottom:12px">
+      <button id="playBtn" class="primary">Play</button>
+      <button id="pauseBtn">Pause</button>
+      <button id="stopBtn" class="danger">Stop</button>
+      <button id="recordBtn" class="ghost">⏺️ Record</button>
+      <a id="downloadLink" class="badge hide" download="music-box.wav">Download WAV</a>
+      <span class="badge">Tip: press <span class="kbd">Space</span> to Play/Pause</span>
+    </div>
+
+    <!-- Primary controls -->
+    <div class="controls">
+      <div class="stack">
+        <label>BPM</label>
+        <div class="row"><input id="bpm" type="range" min="60" max="160" step="1" value="98" /><span class="badge"><span
+              id="bpmVal">98</span> BPM</span></div>
+      </div>
+
+      <div class="stack">
+        <label>Scale</label>
+        <select id="scaleSel">
+          <!-- Friendly & modal -->
+          <option value="C_major">C Major</option>
+          <option value="A_minor">A Natural Minor</option>
+          <option value="A_harm_minor">A Harmonic Minor</option>
+          <option value="A_melodic_minor">A Melodic Minor</option>
+          <option value="D_dorian">D Dorian</option>
+          <option value="E_phrygian">E Phrygian</option>
+          <option value="F_lydian">F Lydian</option>
+          <option value="G_mixolydian">G Mixolydian</option>
+          <option value="B_locrian">B Locrian</option>
+          <!-- Colorful -->
+          <option value="C_major_pent" selected>C Major Pentatonic</option>
+          <option value="A_minor_pent">A Minor Pentatonic</option>
+          <option value="E_blues">E Blues</option>
+          <option value="C_whole">C Whole-Tone</option>
+          <option value="C_chromatic">C Chromatic (12-tone)</option>
+        </select>
+        <small class="muted">Notes: <span id="scaleNotes">C D E G A</span></small>
+      </div>
+
+      <div class="stack">
+        <label>Octave</label>
+        <select id="octSel">
+          <option value="2">2 (warm)</option>
+          <option value="3">3</option>
+          <option value="4" selected>4 (music-boxy)</option>
+          <option value="5">5 (bright)</option>
+          <option value="6">6 (toy-like)</option>
+        </select>
+        <label style="margin-top:8px">Transpose (semitones)</label>
+        <input id="transpose" type="number" value="0" step="1" min="-12" max="12" style="width:90px" />
+      </div>
+
+      <div class="stack">
+        <label>Loop</label>
+        <div class="row"><input id="loopChk" type="checkbox" checked /><span class="muted">Repeat tune</span></div>
+        <label style="margin-top:8px">Length (measures)</label>
+        <div class="row"><input id="lenInp" type="number" min="1" max="16" step="1" value="4" style="width:80px" /><span
+            class="muted">when Loop is off</span></div>
+      </div>
+
+      <div class="stack">
+        <label>Interandom</label>
+        <div class="row"><input id="randChk" type="checkbox" checked /><span class="muted">Vary melody</span></div>
+        <label style="margin-top:8px">Seed</label>
+        <div class="row">
+          <input id="seedInp" type="number" value="12345" style="width:120px" />
+          <button id="newSeedBtn">New Variation</button>
+        </div>
+      </div>
+
+      <div class="stack">
+        <label>Feel</label>
+        <div class="row"><span class="muted">Swing</span><input id="swing" type="range" min="0" max="100" step="1"
+            value="0" /></div>
+        <div class="row"><input id="humanize" type="checkbox" /><span class="muted">Humanize timing</span></div>
+        <label style="margin-top:8px">Melody Pattern</label>
+        <select id="patternSel">
+          <option value="motif" selected>Motif</option>
+          <option value="up">Arp Up</option>
+          <option value="down">Arp Down</option>
+          <option value="updown">Arp Up-Down</option>
+          <option value="random">Random Walk</option>
+        </select>
+      </div>
+
+      <div class="stack">
+        <label>Presets</label>
+        <div class="row">
+          <button id="saveBtn">Save Preset</button>
+          <button id="loadBtn">Load Preset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound design -->
+  <div class="card">
+    <h3 style="margin:0 0 8px">Sound Design</h3>
+    <div class="row" style="gap:20px; flex-wrap:wrap">
+      <div class="stack">
+        <label>Master Volume</label>
+        <div class="row"><input id="masterVol" type="range" min="0" max="100" value="75" /><span class="badge"><span
+              id="volVal">75</span>%</span></div>
+      </div>
+      <div class="stack">
+        <label>Reverb Wet</label>
+        <div class="row"><input id="reverbWet" type="range" min="0" max="100" value="32" /><span class="badge"><span
+              id="revVal">32</span>%</span></div>
+      </div>
+      <div class="stack">
+        <label>Filter Cutoff</label>
+        <div class="row"><input id="cutoff" type="range" min="200" max="8000" value="3200" /><span class="badge"><span
+              id="cutVal">3200</span> Hz</span></div>
+      </div>
+      <div class="stack" style="min-width:260px">
+        <label>Now Playing</label>
+        <div class="bar">
+          <div id="prog"></div>
+        </div>
+        <small class="muted">Bar position updates every step</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visual preview -->
+  <div class="card">
+    <div class="grid">
+      <div>
+        <h3 style="margin:0 0 8px">Melody (16 steps)</h3>
+        <div id="seqMel" class="seq"></div>
+      </div>
+      <div>
+        <h3 style="margin:0 0 8px">Bass (16 steps)</h3>
+        <div id="seqBass" class="seq"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preset modal -->
+  <div id="presetModal" class="card hide" style="max-width:900px">
+    <div class="row">
+      <h3 style="margin:0">Preset JSON</h3>
+      <button id="closePreset" class="right">Close</button>
+    </div>
+    <p class="muted" style="margin-top:6px">Copy this JSON to save, or paste JSON here and press “Load Preset” again.
+    </p>
+    <textarea id="presetText"></textarea>
+  </div>
+
+  <!-- Tutorial -->
+  <div class="card help">
+    <h3>How it Works (short tutorial)</h3>
+    <ol>
+      <li><strong>Scales & Notes:</strong> Choose a scale; the melody picks notes from that set, shown under the menu.
+        Octave + Transpose shift pitch.</li>
+      <li><strong>Interandom:</strong> When enabled, a few melody steps are nudged each run. Enter a numeric
+        <em>Seed</em> for reproducible variations. “New Variation” reshuffles the seed.</li>
+      <li><strong>Timing & Feel:</strong> <em>Swing</em> offsets even 8ths for groove. <em>Humanize</em> adds tiny
+        jitter. <em>Pattern</em> selects a motif or arpeggio behavior.</li>
+      <li><strong>Sound Design:</strong> A soft <em>Low-Pass Filter</em> warms the tone; <em>Reverb</em> adds space;
+        <em>Master Volume</em> keeps output safe.</li>
+      <li><strong>Playback:</strong> If <em>Loop</em> is off, the tune ends automatically after the selected number of
+        measures; otherwise it repeats.</li>
+      <li><strong>Under the Hood:</strong> A single <code>Tone.Loop('16n')</code> advances the step. Accents are added
+        on downbeats using higher velocity. Recording uses the WebAudio <code>MediaRecorder</code> via a split from the
+        output bus.</li>
+    </ol>
+  </div>
+
+  <script>
+    /* ====================== Helpers & Seeded RNG ====================== */
+    const $ = s => document.querySelector(s);
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+    const NOTE_ORDER = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    function transposeNote(note, semis) {
+      if (!note) return null;
+      const m = note.match(/^([A-G]#?)(\d)$/); if (!m) return note;
+      let [_, pitch, oct] = m; oct = +oct;
+      let idx = NOTE_ORDER.indexOf(pitch) + semis;
+      while (idx < 0) { idx += 12; oct--; }
+      while (idx >= 12) { idx -= 12; oct++; }
+      return NOTE_ORDER[idx] + oct;
+    }
+
+    // PRNG
+    function mulberry32(a) { return function () { let t = a += 0x6D2B79F5; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    let seeded = mulberry32(12345);
+    function reseed(v) { const n = (v >>> 0) || 1; seeded = mulberry32(n); }
+
+    /* ====================== UI refs ====================== */
+    const themeBtn = $('#themeBtn');
+    const playBtn = $('#playBtn'), pauseBtn = $('#pauseBtn'), stopBtn = $('#stopBtn');
+    const recordBtn = $('#recordBtn'), downloadLink = $('#downloadLink');
+    const bpm = $('#bpm'), bpmVal = $('#bpmVal'), scaleSel = $('#scaleSel'), octSel = $('#octSel'), transpose = $('#transpose');
+    const loopChk = $('#loopChk'), randChk = $('#randChk'), lenInp = $('#lenInp');
+    const seedInp = $('#seedInp'), newSeedBtn = $('#newSeedBtn');
+    const swing = $('#swing'), humanize = $('#humanize'), patternSel = $('#patternSel');
+    const masterVol = $('#masterVol'), volVal = $('#volVal');
+    const reverbWet = $('#reverbWet'), revVal = $('#revVal');
+    const cutoff = $('#cutoff'), cutVal = $('#cutVal');
+    const seqMel = $('#seqMel'), seqBass = $('#seqBass'), prog = $('#prog'), scaleNotesLabel = $('#scaleNotes');
+    const presetModal = $('#presetModal'), presetText = $('#presetText'), saveBtn = $('#saveBtn'), loadBtn = $('#loadBtn'), closePreset = $('#closePreset');
+
+    function makeSteps(container) { container.innerHTML = ''; for (let i = 0; i < 16; i++) { const d = document.createElement('div'); d.className = 'step'; container.appendChild(d); } }
+    function setActive(container, step) { Array.from(container.children).forEach((el, i) => el.classList.toggle('active', i === step)); }
+    makeSteps(seqMel); makeSteps(seqBass);
+
+    /* ====================== Scales & Pattern Builders ====================== */
+    const SCALES = {
+      C_major: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+      A_minor: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      A_harm_minor: ['A', 'B', 'C', 'D', 'E', 'F', 'G#'],
+      A_melodic_minor: ['A', 'B', 'C', 'D', 'E', 'F#', 'G#'],
+      D_dorian: ['D', 'E', 'F', 'G', 'A', 'B', 'C'],
+      E_phrygian: ['E', 'F', 'G', 'A', 'B', 'C', 'D'],
+      F_lydian: ['F', 'G', 'A', 'B', 'C', 'D', 'E'],
+      G_mixolydian: ['G', 'A', 'B', 'C', 'D', 'E', 'F'],
+      B_locrian: ['B', 'C', 'D', 'E', 'F', 'G', 'A'],
+      C_major_pent: ['C', 'D', 'E', 'G', 'A'],
+      A_minor_pent: ['A', 'C', 'D', 'E', 'G'],
+      E_blues: ['E', 'G', 'A', 'Bb', 'B', 'D'],
+      C_whole: ['C', 'D', 'E', 'F#', 'G#', 'A#'],
+      C_chromatic: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    };
+    function updateScaleLabel(key) { scaleNotesLabel.textContent = (SCALES[key] || SCALES.C_major_pent).join(' '); }
+
+    function motifPattern(scaleLen) {
+      return [0, 2, 4, 2, 0, 2, 4, (6 % scaleLen), 4, 2, 1, 2, 0, 0, 2, 4].map(i => i % scaleLen);
+    }
+    function arpUp(scaleLen) {
+      const arr = []; for (let i = 0; i < 16; i++) arr.push(i % scaleLen); return arr;
+    }
+    function arpDown(scaleLen) {
+      const arr = []; for (let i = 0; i < 16; i++) arr.push((scaleLen - 1 - (i % scaleLen))); return arr;
+    }
+    function arpUpDown(scaleLen) {
+      const up = []; for (let i = 0; i < scaleLen; i++) up.push(i);
+      const down = []; for (let i = scaleLen - 2; i > 0; i--) down.push(i);
+      const seq = up.concat(down); const arr = []; for (let i = 0; i < 16; i++) arr.push(seq[i % seq.length]); return arr;
+    }
+    function randomWalk(scaleLen) {
+      const arr = [Math.floor(seeded() * scaleLen)];
+      for (let i = 1; i < 16; i++) {
+        let prev = arr[i - 1]; let step = (seeded() < 0.5 ? -1 : 1);
+        arr.push((prev + step + scaleLen) % scaleLen);
+      }
+      return arr;
+    }
+
+    function buildTune(scaleKey, octave, interandom) {
+      const sc = SCALES[scaleKey] || SCALES.C_major_pent;
+      updateScaleLabel(scaleKey);
+
+      let melodyIdx;
+      const L = sc.length;
+      switch (patternSel.value) {
+        case 'up': melodyIdx = arpUp(L); break;
+        case 'down': melodyIdx = arpDown(L); break;
+        case 'updown': melodyIdx = arpUpDown(L); break;
+        case 'random': melodyIdx = randomWalk(L); break;
+        default: melodyIdx = motifPattern(L); break;
+      }
+
+      const r = null;
+      let bassIdx = [0, r, 0, r, (3 % L), r, (3 % L), r, (4 % L), r, (4 % L), r, 0, r, 0, r];
+
+      if (interandom) {
+        for (let k = 0; k < 3; k++) {
+          const p = Math.floor(seeded() * melodyIdx.length);
+          const delta = (seeded() < 0.5 ? -1 : 1);
+          melodyIdx[p] = (melodyIdx[p] + delta + L) % L;
+        }
+        for (let i = 0; i < melodyIdx.length; i++) {
+          if (seeded() < 0.18) melodyIdx[i] = null; // rests
+        }
+      }
+
+      let mel = melodyIdx.map(ix => ix === null ? null : `${sc[ix]}${octave}`);
+      let bass = bassIdx.map(ix => ix === null ? null : `${sc[ix]}${Math.max(1, octave - 2)}`);
+
+      // apply transpose
+      const t = parseInt(transpose.value || 0, 10);
+      mel = mel.map(n => transposeNote(n, t));
+      bass = bass.map(n => transposeNote(n, t));
+      return { mel, bass };
+    }
+
+    /* ====================== Audio Graph & Transport ====================== */
+    let musicBox, bassSynth, hat, filter, reverb, gain;
+    let loop16n = null;
+    let step = 0, measure = 0;
+    let playing = false;
+    const STEPS_PER_MEASURE = 16;
+    const ACCENTS = [0, 4, 8, 12];
+
+    // Recorder
+    let mediaDest = null, mediaRecorder = null, chunks = [];
+
+    async function ensureAudio() { await Tone.start(); await Tone.loaded(); }
+
+    function initGraph() {
+      [musicBox, bassSynth, hat, filter, reverb, gain].forEach(n => n?.dispose?.());
+
+      musicBox = new Tone.AMSynth({
+        oscillator: { type: 'triangle' },
+        envelope: { attack: 0.01, decay: 0.2, sustain: 0.25, release: 0.8 }
+      });
+
+      bassSynth = new Tone.MonoSynth({
+        oscillator: { type: 'sawtooth' },
+        filter: { Q: 2, type: 'lowpass', rolloff: -24 },
+        envelope: { attack: 0.02, decay: 0.2, sustain: 0.4, release: 0.6 },
+        filterEnvelope: { attack: 0.02, decay: 0.2, sustain: 0.2, release: 0.4, baseFrequency: 80, octaves: 2.5 }
+      });
+
+      hat = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.05, sustain: 0 } });
+
+      // FX chain: filter + reverb + gain (safe)
+      filter = new Tone.Filter({ type: 'lowpass', frequency: clamp(+cutoff.value, 200, 8000), Q: 0.5 });
+      reverb = new Tone.Reverb({ decay: 2.6, preDelay: 0.02, wet: clamp(+reverbWet.value / 100, 0, 1) });
+      gain = new Tone.Gain(clamp(+masterVol.value / 100 * 0.5, 0, 1)); // ~ -6 dB max
+
+      // Recorder graph: split to speakers and to MediaStreamDestination
+      const ctx = Tone.getContext().rawContext;
+      mediaDest = ctx.createMediaStreamDestination();
+
+      // routing
+      musicBox.chain(filter, reverb, gain);
+      bassSynth.chain(reverb, gain);
+      hat.toDestination();
+      gain.connect(Tone.getContext().destination);
+      gain.connect(mediaDest);
+
+      // voicing trims
+      musicBox.volume.value = -6;
+      bassSynth.volume.value = -8;
+      hat.volume.value = -14;
+
+      // feel (no ramps)
+      Tone.Transport.bpm.value = Number(bpm.value);
+      Tone.Transport.timeSignature = [4, 4];
+      Tone.Transport.swing = clamp(+swing.value / 100, 0, 1);
+      Tone.Transport.swingSubdivision = '8n';
+      Tone.Transport.humanize = humanize.checked;
+    }
+
+    let melody = Array(16).fill(null);
+    let bass = Array(16).fill(null);
+
+    function rebuildPatterns() {
+      const octave = parseInt(octSel.value, 10);
+      const { mel, bass: bb } = buildTune(scaleSel.value, octave, randChk.checked);
+      melody = mel; bass = bb;
+      setActive(seqMel, -1); setActive(seqBass, -1);
+    }
+
+    function startLoop() {
+      if (loop16n) { loop16n.dispose(); loop16n = null; }
+      step = 0; measure = 0;
+      const measureLen = clamp(parseInt(lenInp.value, 10) || 4, 1, 16);
+
+      loop16n = new Tone.Loop((time) => {
+        setActive(seqMel, step); setActive(seqBass, step);
+        prog.style.width = ((step + 1) / STEPS_PER_MEASURE * 100) + '%';
+
+        const accented = ACCENTS.includes(step);
+        const velMel = accented ? 0.95 : 0.7;
+        const velBas = accented ? 0.9 : 0.65;
+
+        const mNote = melody[step];
+        const bNote = bass[step];
+        if (mNote) musicBox.triggerAttackRelease(mNote, '8n', time, velMel);
+        if (bNote) bassSynth.triggerAttackRelease(bNote, '4n', time, velBas);
+
+        if (step % 2 === 0) hat.triggerAttackRelease('16n', time, 0.25);
+
+        step = (step + 1) % STEPS_PER_MEASURE;
+        if (step === 0) {
+          measure++;
+          if (!loopChk.checked && measure >= measureLen) {
+            stopTune();
+          }
+        }
+      }, '16n');
+
+      loop16n.start(0);
+    }
+
+    /* ====================== Robust Controls (fixed Play/Pause/Stop) ====================== */
+    async function startTuneFresh() {
+      await ensureAudio();
+      initGraph();
+      reseed(seedInp.value >>> 0);
+      rebuildPatterns();
+      startLoop();
+      Tone.Transport.start();
+      playing = true;
+      playBtn.textContent = 'Play';
+    }
+
+    function pauseTune() {
+      if (Tone.Transport.state === 'started') {
+        Tone.Transport.pause();
+      } else if (Tone.Transport.state === 'paused') {
+        Tone.Transport.start();
+      } else {
+        // if stopped, start fresh
+        startTuneFresh();
+        return;
+      }
+    }
+
+    function stopTune() {
+      Tone.Transport.stop();
+      loop16n?.stop(); loop16n?.dispose(); loop16n = null;
+      playing = false;
+      setActive(seqMel, -1); setActive(seqBass, -1);
+      prog.style.width = '0%';
+    }
+
+    playBtn.addEventListener('click', async () => {
+      // Play always starts/resumes
+      if (Tone.Transport.state === 'started') return; // already running
+      if (Tone.Transport.state === 'paused') { Tone.Transport.start(); return; }
+      await startTuneFresh();
+    });
+
+    pauseBtn.addEventListener('click', () => pauseTune());
+    stopBtn.addEventListener('click', () => stopTune());
+
+    // Space toggles play/pause cleanly
+    window.addEventListener('keydown', async (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (Tone.Transport.state === 'started') { Tone.Transport.pause(); }
+        else if (Tone.Transport.state === 'paused') { Tone.Transport.start(); }
+        else { await startTuneFresh(); }
+      }
+    });
+
+    // Auto-pause when tab hidden (polite)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && Tone.Transport.state === 'started') {
+        Tone.Transport.pause();
+      }
+    });
+
+    /* ====================== Record to WAV ====================== */
+    let isRecording = false;
+    recordBtn.addEventListener('click', () => {
+      try {
+        if (!mediaDest) { // not initialized yet; init graph first
+          initGraph();
+        }
+        if (!isRecording) {
+          chunks = [];
+          mediaRecorder = new MediaRecorder(mediaDest.stream);
+          mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            downloadLink.href = url;
+            downloadLink.classList.remove('hide');
+          };
+          mediaRecorder.start();
+          isRecording = true;
+          recordBtn.textContent = '⏹️ Stop Rec';
+          downloadLink.classList.add('hide');
+        } else {
+          mediaRecorder.stop();
+          isRecording = false;
+          recordBtn.textContent = '⏺️ Record';
+        }
+      } catch (e) {
+        alert('Recording not supported in this browser/tab context.');
+        console.error(e);
+      }
+    });
+
+    /* ====================== Reactive UI ====================== */
+    bpm.addEventListener('input', () => { bpmVal.textContent = bpm.value; Tone.Transport.bpm.value = Number(bpm.value); });
+    scaleSel.addEventListener('change', () => { rebuildPatterns(); });
+    octSel.addEventListener('change', () => { rebuildPatterns(); });
+    transpose.addEventListener('change', () => { rebuildPatterns(); });
+    patternSel.addEventListener('change', () => { rebuildPatterns(); });
+
+    randChk.addEventListener('change', () => { rebuildPatterns(); });
+    seedInp.addEventListener('change', () => { reseed(seedInp.value >>> 0); rebuildPatterns(); });
+    newSeedBtn.addEventListener('click', () => { const s = (Math.random() * 1e9) | 0; seedInp.value = s; reseed(s); rebuildPatterns(); });
+
+    swing.addEventListener('input', () => { Tone.Transport.swing = clamp(+swing.value / 100, 0, 1); });
+    humanize.addEventListener('change', () => { Tone.Transport.humanize = humanize.checked; });
+
+    masterVol.addEventListener('input', () => { volVal.textContent = masterVol.value; gain && (gain.gain.value = clamp(+masterVol.value / 100 * 0.5, 0, 1)); });
+    reverbWet.addEventListener('input', () => { revVal.textContent = reverbWet.value; reverb && (reverb.wet.value = clamp(+reverbWet.value / 100, 0, 1)); });
+    cutoff.addEventListener('input', () => { cutVal.textContent = cutoff.value; filter && (filter.frequency.value = clamp(+cutoff.value, 200, 8000)); });
+
+    /* ====================== Theme & Presets ====================== */
+    themeBtn.addEventListener('click', () => {
+      const root = document.body;
+      root.dataset.theme = (root.dataset.theme === 'light') ? 'dark' : 'light';
+    });
+
+    function getPreset() {
+      return {
+        bpm: +bpm.value,
+        scale: scaleSel.value,
+        octave: +octSel.value,
+        transpose: +transpose.value,
+        loop: loopChk.checked,
+        length: +lenInp.value,
+        interandom: randChk.checked,
+        seed: seedInp.value >>> 0,
+        swing: +swing.value,
+        humanize: humanize.checked,
+        pattern: patternSel.value,
+        masterVol: +masterVol.value,
+        reverbWet: +reverbWet.value,
+        cutoff: +cutoff.value,
+        theme: document.body.dataset.theme || 'dark'
+      };
+    }
+    function applyPreset(p) {
+      if (!p) return;
+      bpm.value = p.bpm ?? 98; bpm.dispatchEvent(new Event('input'));
+      scaleSel.value = p.scale ?? 'C_major_pent'; updateScaleLabel(scaleSel.value);
+      octSel.value = p.octave ?? 4;
+      transpose.value = p.transpose ?? 0;
+      loopChk.checked = !!p.loop;
+      lenInp.value = p.length ?? 4;
+      randChk.checked = !!p.interandom;
+      seedInp.value = p.seed ?? 12345; reseed(seedInp.value >>> 0);
+      swing.value = p.swing ?? 0; Tone.Transport.swing = clamp(+swing.value / 100, 0, 1);
+      humanize.checked = !!p.humanize; Tone.Transport.humanize = humanize.checked;
+      patternSel.value = p.pattern ?? 'motif';
+      masterVol.value = p.masterVol ?? 75; volVal.textContent = masterVol.value;
+      reverbWet.value = p.reverbWet ?? 32; revVal.textContent = reverbWet.value;
+      cutoff.value = p.cutoff ?? 3200; cutVal.textContent = cutoff.value;
+      document.body.dataset.theme = p.theme || 'dark';
+      rebuildPatterns();
+    }
+    saveBtn.addEventListener('click', () => {
+      presetText.value = JSON.stringify(getPreset(), null, 2);
+      presetModal.classList.remove('hide');
+    });
+    loadBtn.addEventListener('click', () => {
+      if (presetModal.classList.contains('hide')) {
+        // first click shows modal to paste JSON
+        presetText.value = JSON.stringify(getPreset(), null, 2);
+        presetModal.classList.remove('hide');
+      } else {
+        try {
+          const p = JSON.parse(presetText.value);
+          applyPreset(p);
+          alert('Preset loaded ✅');
+        } catch (e) { alert('Invalid JSON'); }
+      }
+    });
+    closePreset.addEventListener('click', () => presetModal.classList.add('hide'));
+
+    /* ====================== Init ====================== */
+    bpmVal.textContent = bpm.value;
+    volVal.textContent = masterVol.value;
+    revVal.textContent = reverbWet.value;
+    cutVal.textContent = cutoff.value;
+    updateScaleLabel(scaleSel.value);
+
+    // Start muted & safe; user clicks Play to unlock audio.
+  </script>
+</body>
+
+</html>

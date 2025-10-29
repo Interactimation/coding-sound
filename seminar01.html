@@ -75,6 +75,7 @@
 
 <script>
 
+    console.log("metal");
     console.log(Tone.MetalSynth.getDefaults());
     const gain = new Tone.Gain(0.7);
     const synth1 = new Tone.MetalSynth({
@@ -88,6 +89,8 @@
             octaves: 1.5
         });
     const synth2 = new Tone.MembraneSynth();
+    console.log("membrane");
+    console.log(Tone.MembraneSynth.getDefaults());
 
     synth1.connect(gain);
     synth2.connect(gain);

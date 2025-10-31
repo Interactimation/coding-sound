@@ -41,14 +41,14 @@
     /*within the grid, individual "pads"*/
     .pad {
       border-radius: 12px;
-      background: pink;
+      background: #C4C4C4;
       display: flex;
       align-items: center;
       justify-content: center;
       /*next two lines keep the text from being selectable, even on older browsers*/
       user-select: none;
       -webkit-user-select: none;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 10px rgba(8, 8, 8, 0.3);
 
     }
 
@@ -145,7 +145,7 @@
     lfo1.connect(modSynth.volume);
     lfo1.start();
 
-
+/*
     // Arrow Key Listener, change volume and wetness of fbDelay
 
     document.addEventListener("keydown", function (e) {
@@ -185,6 +185,8 @@
 
 
     });
+
+    */
 
 
     //an array of notes PRO TIP: this number of these is related to the value of --n (see pro tip, above) 

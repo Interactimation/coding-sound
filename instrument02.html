@@ -109,7 +109,7 @@
     })
 
     //instantiate FMSynth
-    const modSynth = new Tone.FMSynth({
+    const modSynth = new Tone.PolySynth(Tone.FMSynth, {
       harmonicity: 3,
       modulationIndex: 10,
       detune: 0,
@@ -119,7 +119,7 @@
         attack: 0.01,
         decay: 0.3,
         sustain: 1,
-        srelease: 0.5
+        release: 0.5
       },
       modulationEnvelope: {
         attack: 0.05,

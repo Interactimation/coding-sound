@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expanded Virtual Piano</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.39/Tone.min.js"></script>
+  <style>
+    body {
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow-x: auto;
+    }
+    .piano {
+      display: flex;
+      position: relative;
+      padding: 20px;
+    }
+    .key {
+      width: 60px;
+      height: 200px;
+      border: 1px solid #000;
+      margin: 1px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+    .white {
+      background: pink;
+      line-height: 150wpx;
+    }
+    .black {
+      background: purple;
+      width: 40px;
+      height: 100px;
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      margin-left: -20px;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      font-size: 14px;
+      padding-bottom: 5px;
+    }
+    .label {
+      position: absolute;
+      bottom: 5px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="piano">
+    <!-- White keys -->
+    <div class="key white" data-key="A" data-note="C4"><div class="label">A<br>C4</div></div>
+    <div class="key white" data-key="S" data-note="D4"><div class="label">S<br>D4</div></div>
+    <div class="key white" data-key="D" data-note="E4"><div class="label">D<br>E4</div></div>
+    <div class="key white" data-key="F" data-note="F4"><div class="label">F<br>F4</div></div>
+    <div class="key white" data-key="G" data-note="G4"><div class="label">G<br>G4</div></div>
+    <div class="key white" data-key="H" data-note="A4"><div class="label">H<br>A4</div></div>
+    <div class="key white" data-key="J" data-note="B4"><div class="label">J<br>B4</div></div>
+    <div class="key white" data-key="K" data-note="C5"><div class="label">K<br>C5</div></div>
+
+    <!-- Black keys -->
+    <div class="key black" data-key="W" data-note="C#4" style="left: 40px;">W<br>C#4</div>
+    <div class="key black" data-key="E" data-note="D#4" style="left: 100px;">E<br>D#4</div>
+    <div class="key black" data-key="T" data-note="F#4" style="left: 220px;">T<br>F#4</div>
+    <div class="key black" data-key="Y" data-note="G#4" style="left: 280px;">Y<br>G#4</div>
+    <div class="key black" data-key="U" data-note="A#4" style="left: 340px;">U<br>A#4</div>
+  </div>
+
+  <script>
+    const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+
+    document.addEventListener('keydown', async (e) => {
+      const key = document.querySelector(`.key[data-key="${e.key.toUpperCase()}"]`);
+      if (key) {
+        key.style.transform = 'scale(0.95)';
+        setTimeout(() => key.style.transform = 'scale(1)', 100);
+
+        await Tone.start();
+        const note = key.getAttribute('data-note');
+        synth.triggerAttackRelease(note, "8n");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -194,10 +194,10 @@
     //set the gain a little lower
     modSynth.volume.value = Tone.gainToDb(0.7);
     const notes = [
-      "C#4", "F#4", "B4", "E4",
-      "Ab4", "D#5", "E5", "A4",
-      "Eb4", "F5", "D5", "D4",
-      "Bb4", "F4", "C4", "G4"
+      "C#5", "F#4", "B4", "E4",
+      "G#4", "D#5", "E5", "A4",
+      "D#4", "F5", "D5", "D4",
+      "Bb4", "F4", "C5", "G4"
     ];
 
     //go through the array "notes" and create a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
@@ -222,22 +222,30 @@
       const note = pad.dataset.note;
       downNotesByPointer.set(e.pointerId, { note, pad });
       pad.classList.add('active');
-      modSynth.triggerAttackRelease(note);
+      modSynth.triggerAttack(note);
+      console.log("DOWN");
     });
 
     //same as above but release the note when the mouse of ringer leaves the pad
     function releasePointer(e) {
+      
       const rec = downNotesByPointer.get(e.pointerId);
+      
       if (!rec) return;
+     
       modSynth.triggerRelease(rec.note);
+       console.log("UP");
       rec.pad.classList.remove('active');
+      
       downNotesByPointer.delete(e.pointerId);
+      
     }
     // if finger drags off pad, still release when it lifts:
     grid.addEventListener('pointerup', releasePointer);
     grid.addEventListener('pointercancel', releasePointer);
     grid.addEventListener('pointerleave', e => {
       // we don't need anything here
+      //releasePointer
     });
 
   </script>

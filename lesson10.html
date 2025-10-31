@@ -89,6 +89,7 @@
             downNotesByPointer.set(e.pointerId, { note, pad });
             pad.classList.add('active');
             synth.triggerAttack(note);
+            console.log("down");
         });
 
         //same as above but release the note when the mouse of ringer leaves the pad
@@ -98,12 +99,14 @@
             synth.triggerRelease(rec.note);
             rec.pad.classList.remove('active');
             downNotesByPointer.delete(e.pointerId);
+            console.log("up");
         }
         // if finger drags off pad, still release when it lifts:
         grid.addEventListener('pointerup', releasePointer);
         grid.addEventListener('pointercancel', releasePointer);
         grid.addEventListener('pointerleave', e => {
             // we don't need anything here
+            
         });
 
     </script>

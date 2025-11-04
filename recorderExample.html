@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+    <title>Recorder Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+ 
+</head>
+
+<body>
+    <h1>Recorder Example</h1>
+    <!--REC play-btn starts the sound and the recording-->
+    <button id="play-btn">Play</button>
+    <!--REC stop=btn stops the sound and the recording-->
+    <button id="stop-btn">Stop</button>
+    <br />
+    <br />
+    <!--REC We'll send the data to this audio controller: After Stop, there will be a download option under the three dots-->
+    <audio controls></audio>
+
+    <!--the bottom page buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/JakeRecorder.html', '_blank')">
+            Code
+        </button>
+      
+    </div>
+
+    <script>
+        //construct a synth
+        const synth = new Tone.Synth().toDestination();
+
+//REC get the Tone context
+        const actx = Tone.context;
+        //REC create a media stream destination in the context 
+        const dest = actx.createMediaStreamDestination();
+        //REC create a recorder for the stream
+        const recorder = new MediaRecorder(dest.stream);
+        //REC connect the synth to the stream
+        synth.connect(dest);
+
+        //REC get the audio controls (in the html)
+        const audio = document.querySelector('audio');
+        //REC create an array called "chunks"
+        const chunks = [];
+
+        // create an array of "notes" and a variable to work through the array
+        const notes = ['C4', 'E4', 'G4', 'C5', 'E5', 'G5'];
+        let index = 0;
+//play through the notes in the array
+        Tone.Transport.scheduleRepeat(time => repeat(time), "8n");
+        Tone.Transport.bpm.value = 120;
+
+        function repeat(time) {
+            let note = notes[index % notes.length];
+            synth.triggerAttackRelease(note, '8n', time);
+            index++;
+        }
+
+        //REC get the play button, when clicked start playback (play till timeout) start recorder
+        document.getElementById("play-btn").addEventListener("click", () => {
+            if (Tone.context.state !== "running") Tone.start();
+            Tone.Transport.start();
+            recorder.start();
+            console.log("Recording started");
+            setTimeout(() => Tone.Transport.stop(), 2000);
+        });
+
+        //REC get the stop button, when clicked stop playback, stop recorder
+        document.getElementById("stop-btn").addEventListener("click", () => {
+            Tone.Transport.stop();
+            recorder.stop();
+            console.log("Recording stopped");
+        });
+
+        //REC whenever there's data available push it to the "chunks" array
+        recorder.ondataavailable = evt => chunks.push(evt.data);
+        //REC when the recorder's stopped, create a new "blob" (data stored by the page) and feed it the chunks from the array
+        recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/wav' });
+            //REC create a URL for the blob
+            audio.src = URL.createObjectURL(blob);
+        };
+    </script>
+</body>
+
+</html>

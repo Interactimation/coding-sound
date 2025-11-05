@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rec/Stop Button</title>
+<style>
+  #recBtn {
+    font-size: 1.5em;
+    padding: 10px 20px;
+    width: 150px;
+text-align: center;
+    border: 2px solid white;
+    border-radius: 8px;
+    background: black;
+    cursor: pointer;
+    color: red;
+  }
+
+  #recBtn.recording {
+    color: black;
+    position: relative;
+  }
+
+  #recBtn.recording::before {
+    content: "● ";
+    color: red;
+  }
+</style>
+</head>
+<body>
+
+<button id="recBtn">Rec</button>
+
+<script>
+  const recBtn = document.getElementById("recBtn");
+  let isRecording = false;
+
+  recBtn.addEventListener("click", () => {
+    isRecording = !isRecording;
+    if (isRecording) {
+      recBtn.textContent = "Stop";
+      recBtn.classList.add("recording");
+      console.log("recording");
+    } else {
+      recBtn.textContent = "Rec";
+      recBtn.classList.remove("recording");
+      console.log("stopped");
+    }
+  });
+</script>
+
+</body>
+</html>

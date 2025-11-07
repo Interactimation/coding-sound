@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="codingSoundFavicon.ico" />
 
-<!--
+    <!--
 RECMOD
 This pages contains a more modular recorder so you can copy the needed code to your own project 
 Search for: 
@@ -95,8 +95,8 @@ Each modular section ends with
             content: "● ";
             color: red;
         }
-        /*////RECMOD end*/
 
+        /*////RECMOD end*/
     </style>
 
 
@@ -190,7 +190,7 @@ Each modular section ends with
         const dest = actx.createMediaStreamDestination();
         //create a recorder for the stream
         const recorder = new MediaRecorder(dest.stream);
-        //connect the synth patch bay to the stream
+        //connect to dest whatever's being passed "to.Destination()" elsewhere
         gain.connect(dest);
         //get the button from HTML and set a var- "isRecording" -to false
         const recBtn = document.getElementById("recBtn");
@@ -290,7 +290,7 @@ Each modular section ends with
 
 
         /*
-
+        LEFTOVERS
         I may use some of this to add onscreen controllers to my instrument but I want to avoid keyboard interface, so mobile users can enjoy
 
                 // Arrow Key Listener, change volume and wetness of fbDelay

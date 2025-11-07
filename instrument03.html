@@ -6,46 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="codingSoundFavicon.ico" />
 
+<!--
+RECMOD
+This pages contains a more modular recorder so you can copy the needed code to your own project 
+Search for: 
+////RECMOD
+Which begins each modular section
+Each modular section ends with 
+////RECMOD end
+-->
+
     <title>Instrument03</title>
 
     <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
 
-
-
     <!--import the webpage's stylesheet-->
     <link rel="stylesheet" href="style.css" />
 
-    <!--css style for our div-->
+    <!--css style for our launchpad div-->
     <style>
-        /*
-rec button
-*/
-
-        #recBtn {
-            font-size: 1.5em;
-            padding: 10px 20px;
-            width: 150px;
-            text-align: center;
-            border: 2px solid white;
-            border-radius: 8px;
-            background: black;
-            cursor: pointer;
-            color: red;
-        }
-
-        #recBtn.recording {
-            color: black;
-            position: relative;
-        }
-
-        #recBtn.recording::before {
-            content: "● ";
-            color: red;
-        }
-
-
+        /*Styles for our launchpad*/
         /*a custom property: the number of columns and rows in the grid*/
         /*PRO TIP: change the value of --n to 5 and —below, in the "notes" array— change the number of items in the array to something divisible by 5... or do this with 6 and its multiples, etc */
         :root {
@@ -82,6 +64,39 @@ rec button
             transform: scale(.97);
             filter: brightness(.9);
         }
+
+        /*////RECMOD styles for our audio controls and button (not necessary, but nice)*/
+
+        #audCtrl {
+
+            margin: 0px 0px -17px 0px;
+
+        }
+
+        #recBtn {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            margin: 0px 60px 10px 30px;
+            width: 150px;
+            text-align: center;
+            border: 2px solid white;
+            border-radius: 8px;
+            background: black;
+            cursor: pointer;
+            color: rgb(99, 36, 36);
+        }
+
+        #recBtn.recording {
+            color: black;
+            position: relative;
+        }
+
+        #recBtn.recording::before {
+            content: "● ";
+            color: red;
+        }
+        /*////RECMOD end*/
+
     </style>
 
 
@@ -90,16 +105,22 @@ rec button
 
 <body>
     <!-- this is the start of content -->
-    <h1>Instrument Project 03</h1>
+    <h1>Instrument Project 03: Recordable</h1>
     <h3><i>Steel Drum</i></h3>
     <br />
 
 
-    <!--Rec Button-->
-
+    <!--////RECMOD the record/stop button and the playback/download device-->
     <button id="recBtn">Rec</button>
+    <!--REC We'll send the data to this audio controller: After Stop, there will be a download option under the three dots-->
+    <audio controls id="audCtrl"></audio>
+    <!--////RECMOD end-->
+
     <br />
     <br />
+
+    <!--a div to hold our pads-->
+    <div id="pads" class="grid"></div>
 
 
     <!--BOTTOM-->
@@ -111,40 +132,11 @@ rec button
 
     </div>
 
-    <!--a div to hold our buttons-->
-    <div id="pads" class="grid"></div>
-
     <!--JAVASCRIPT-->
 
     <script>
 
-        // button script
-        const recBtn = document.getElementById("recBtn");
-        let isRecording = false;
-
-        ////////////
-        ////TODO////
-        /////////// 
-        recBtn.addEventListener("click", () => {
-            isRecording = !isRecording;
-            if (isRecording) {
-                recBtn.textContent = "Stop";
-                recBtn.classList.add("recording");
-                console.log("recording");
-            } else {
-                recBtn.textContent = "Rec";
-                recBtn.classList.remove("recording");
-                console.log("stopped");
-            }
-        });
-
-        /* 
-        instrument02 - steel drum
-        */
-
-
         //SETUP SOME EFFECTS
-
 
         //One: FeedbackDelay
         let fbDelay = new Tone.FeedbackDelay({
@@ -191,63 +183,60 @@ rec button
         autWah.connect(gain);
         gain.toDestination();
 
+        ////RECMOD setup the recorder
+        //get the Tone context
+        const actx = Tone.context;
+        //create a media stream destination in the context 
+        const dest = actx.createMediaStreamDestination();
+        //create a recorder for the stream
+        const recorder = new MediaRecorder(dest.stream);
+        //connect the synth patch bay to the stream
+        gain.connect(dest);
+        //get the button from HTML and set a var- "isRecording" -to false
+        const recBtn = document.getElementById("recBtn");
+        let isRecording = false;
+        //get the audio controls (in the html)
+        const audio = document.querySelector('audio');
+        //create an array called "chunks"
+        const chunks = [];
+        //listen for click to the button, start and stop recording based on context
+        recBtn.addEventListener("click", () => {
+            isRecording = !isRecording;
+            if (isRecording) {
+                recBtn.textContent = "Stop";
+                recBtn.classList.add("recording");
+                recorder.start();
+                console.log("recording");
+            } else {
+                recBtn.textContent = "Rec";
+                recBtn.classList.remove("recording");
+                recorder.stop();
+                console.log("stopped");
+            }
+        });
+        //whenever there's data available push it to the "chunks" array
+        recorder.ondataavailable = evt => chunks.push(evt.data);
+        //when the recorder's stopped, create a new "blob" (data stored by the page) and feed it the chunks from the array
+        recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/wav' });
+            //create a URL for the blob
+            audio.src = URL.createObjectURL(blob);
+        };
+        ////RECMOD end
+
 
         //create an LFO and let it modulate the volume of the FMSynth
 
-        let lfo1 = new Tone.LFO(16, 3, 12);
+        let lfo1 = new Tone.LFO(32, 3, 12);
         lfo1.connect(modSynth.volume);
         lfo1.start();
 
-        /*
-            // Arrow Key Listener, change volume and wetness of fbDelay
-        
-            document.addEventListener("keydown", function (e) {
-        
-              //arrow up raises gain by 0.1
-              if (e.key === "ArrowUp") {
-                gain.gain.value += 0.05;
-                console.log("this is the up arrow: " + gain.gain.value);
-                //if gain reaches 2 or higher, it's set to 2
-                if (gain.gain.value >= 0.5) {
-                  gain.gain.value = 0.5;
-                  console.log("this is the up arrow: " + gain.gain.value);
-        
-                }
-                //down arrow lowers gain by 0.1
-              } else if (e.key === "ArrowDown") {
-                gain.gain.value -= 0.1;
-                console.log("this is the down arrow: " + gain.gain.value);
-                //if gain reaches 0.1 or lower, it's set to 0.1
-                if (gain.gain.value <= 0.1) {
-                  gain.gain.value = 0.1;
-                  console.log("this is the down arrow: " + gain.gain.value);
-                }
-              }
-        
-              //arrow left reduces fbDelay wet by 0.1
-              else if (e.key === "ArrowLeft" && fbDelay.wet.value >= 0.2) {
-                fbDelay.wet.value -= 0.1;
-                console.log("this is the left arrow: " + fbDelay.wet.value);
-              }
-        
-              //arrow right increases fbDelay wet by 0.1
-              else if (e.key === "ArrowRight" && fbDelay.wet.value <= 0.8) {
-                fbDelay.wet.value += 0.1;
-                console.log("this is the right arrow: " + fbDelay.wet.value);
-              }
-        
-        
-            });
-        
-            */
-
-
         //an array of notes PRO TIP: this number of these is related to the value of --n (see pro tip, above) 
 
-        //const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-
-        //set the gain a little lower
+        //set the gain
         modSynth.volume.value = Tone.gainToDb(0.7);
+
+        //construct an array of notes, one for each pad
         const notes = [
             "C#5", "F#4", "B4", "E4",
             "G#4", "D#5", "E5", "A4",
@@ -255,7 +244,7 @@ rec button
             "Bb4", "F4", "C5", "G4"
         ];
 
-        //go through the array "notes" and create a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
+        //go through the array "notes" and assign a pad for each value (n) of each index- or slot in the array (i) and attach them to the div called "pads"
         const grid = document.getElementById('pads');
         notes.forEach((n, i) => {
             const d = document.createElement('div');
@@ -263,7 +252,7 @@ rec button
             d.textContent = n; d.dataset.note = n; grid.appendChild(d);
         });
 
-        // to avoid autoplay (forbidden) and to keep the user from having to click once before anything plays, we can use this self-calling function —alternately we could have something like an "on" button that triggers Tone.start
+        // to avoid autoplay (forbidden) this self-calling function starts Tone on any first click
         const resumeOnce = () => { Tone.start(); window.removeEventListener('pointerdown', resumeOnce); };
         window.addEventListener('pointerdown', resumeOnce, { once: true });
 
@@ -281,17 +270,13 @@ rec button
             console.log("DOWN");
         });
 
-        //same as above but release the note when the mouse of ringer leaves the pad
+        //same as above but release the note when the mouse or finger leaves the pad
         function releasePointer(e) {
-
             const rec = downNotesByPointer.get(e.pointerId);
-
             if (!rec) return;
-
             modSynth.triggerRelease(rec.note);
             console.log("UP");
             rec.pad.classList.remove('active');
-
             downNotesByPointer.delete(e.pointerId);
 
         }
@@ -302,6 +287,54 @@ rec button
             // we don't need anything here
             //releasePointer
         });
+
+
+        /*
+
+        I may use some of this to add onscreen controllers to my instrument but I want to avoid keyboard interface, so mobile users can enjoy
+
+                // Arrow Key Listener, change volume and wetness of fbDelay
+            
+                document.addEventListener("keydown", function (e) {
+            
+                  //arrow up raises gain by 0.1
+                  if (e.key === "ArrowUp") {
+                    gain.gain.value += 0.05;
+                    console.log("this is the up arrow: " + gain.gain.value);
+                    //if gain reaches 2 or higher, it's set to 2
+                    if (gain.gain.value >= 0.5) {
+                      gain.gain.value = 0.5;
+                      console.log("this is the up arrow: " + gain.gain.value);
+            
+                    }
+                    //down arrow lowers gain by 0.1
+                  } else if (e.key === "ArrowDown") {
+                    gain.gain.value -= 0.1;
+                    console.log("this is the down arrow: " + gain.gain.value);
+                    //if gain reaches 0.1 or lower, it's set to 0.1
+                    if (gain.gain.value <= 0.1) {
+                      gain.gain.value = 0.1;
+                      console.log("this is the down arrow: " + gain.gain.value);
+                    }
+                  }
+            
+                  //arrow left reduces fbDelay wet by 0.1
+                  else if (e.key === "ArrowLeft" && fbDelay.wet.value >= 0.2) {
+                    fbDelay.wet.value -= 0.1;
+                    console.log("this is the left arrow: " + fbDelay.wet.value);
+                  }
+            
+                  //arrow right increases fbDelay wet by 0.1
+                  else if (e.key === "ArrowRight" && fbDelay.wet.value <= 0.8) {
+                    fbDelay.wet.value += 0.1;
+                    console.log("this is the right arrow: " + fbDelay.wet.value);
+                  }
+            
+            
+                });
+            
+                */
+
 
     </script>
 

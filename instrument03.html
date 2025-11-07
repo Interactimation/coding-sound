@@ -7,7 +7,7 @@
     <link rel="icon" href="codingSoundFavicon.ico" />
 
     <!--
-RECMOD
+////RECMOD
 This pages contains a more modular recorder so you can copy the needed code to your own project 
 Search for: 
 ////RECMOD
@@ -92,7 +92,6 @@ Each modular section ends with
             content: "● ";
             color: red;
         }
-
         /*////RECMOD end*/
     </style>
 
@@ -180,46 +179,7 @@ Each modular section ends with
         autWah.connect(gain);
         gain.toDestination();
 
-        ////RECMOD setup the recorder
-        //get the Tone context
-        const actx = Tone.context;
-        //create a media stream destination in the context 
-        const dest = actx.createMediaStreamDestination();
-        //create a recorder for the stream
-        const recorder = new MediaRecorder(dest.stream);
-        //connect to dest whatever's being passed "to.Destination()" elsewhere
-        gain.connect(dest);
-        //get the button from HTML and set a var- "isRecording" -to false
-        const recBtn = document.getElementById("recBtn");
-        let isRecording = false;
-        //get the audio controls (in the html)
-        const audio = document.querySelector('audio');
-        //create an array called "chunks"
-        const chunks = [];
-        //listen for click to the button, start and stop recording based on context
-        recBtn.addEventListener("click", () => {
-            isRecording = !isRecording;
-            if (isRecording) {
-                recBtn.textContent = "Stop";
-                recBtn.classList.add("recording");
-                recorder.start();
-                console.log("recording");
-            } else {
-                recBtn.textContent = "Rec";
-                recBtn.classList.remove("recording");
-                recorder.stop();
-                console.log("stopped");
-            }
-        });
-        //whenever there's data available push it to the "chunks" array
-        recorder.ondataavailable = evt => chunks.push(evt.data);
-        //when the recorder's stopped, create a new "blob" (data stored by the page) and feed it the chunks from the array
-        recorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'audio/wav' });
-            //create a URL for the blob
-            audio.src = URL.createObjectURL(blob);
-        };
-        ////RECMOD end
+       
 
 
         //create an LFO and let it modulate the volume of the FMSynth
@@ -284,6 +244,48 @@ Each modular section ends with
             // we don't need anything here
             //releasePointer
         });
+
+
+    ////RECMOD setup the recorder
+    //get the Tone context
+    const actx = Tone.context;
+    //create a media stream destination in the context 
+    const dest = actx.createMediaStreamDestination();
+    //create a recorder for the stream
+    const recorder = new MediaRecorder(dest.stream);
+    //NOTE: connect to dest whatever's being passed "to.Destination()" elsewhere
+    gain.connect(dest);
+    //get the button from HTML and set a var- "isRecording" -to false
+    const recBtn = document.getElementById("recBtn");
+    let isRecording = false;
+    //get the audio controls (in the html)
+    const audio = document.querySelector('audio');
+    //create an array called "chunks"
+    const chunks = [];
+    //listen for click to the button, start and stop recording based on context
+    recBtn.addEventListener("click", () => {
+        isRecording = !isRecording;
+        if (isRecording) {
+            recBtn.textContent = "Stop";
+            recBtn.classList.add("recording");
+            recorder.start();
+            console.log("recording");
+        } else {
+            recBtn.textContent = "Rec";
+            recBtn.classList.remove("recording");
+            recorder.stop();
+            console.log("stopped");
+        }
+    });
+    //whenever there's data available push it to the "chunks" array
+    recorder.ondataavailable = evt => chunks.push(evt.data);
+    //when the recorder's stopped, create a new "blob" (data stored by the page) and feed it the chunks from the array
+    recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/wav' });
+        //create a URL for the blob
+        audio.src = URL.createObjectURL(blob);
+    };
+    ////RECMOD end
 
 
         /*

@@ -84,7 +84,7 @@ Each modular section ends with
         }
 
         #recBtn.recording {
-            color: black;
+            color: white;
             position: relative;
         }
 
@@ -253,8 +253,7 @@ Each modular section ends with
     const dest = actx.createMediaStreamDestination();
     //create a recorder for the stream
     const recorder = new MediaRecorder(dest.stream);
-    //NOTE: connect to dest whatever's being passed "to.Destination()" elsewhere
-    gain.connect(dest);
+  
     //get the button from HTML and set a var- "isRecording" -to false
     const recBtn = document.getElementById("recBtn");
     let isRecording = false;

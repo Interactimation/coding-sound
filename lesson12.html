@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 12</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+    <!-- this is the start of content -->
+    <h1>Processing Audio Files</h1>
+
+    <!--create a button named cow_btn-->
+    <button id="cow-btn">Cowbell</button>
+
+    <!--create a button named pop_btn-->
+    <button id="pop-btn">Pop</button>
+
+    <!--BOTTOM-->
+    <!--Nav Buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson12.html', '_blank')">Code</button>
+        <button class="right" onclick="window.open('lesson13.html')">Next</button>
+    </div>
+
+    <!--JAVASCRIPT-->
+    <script>
+
+            /*
+        Processing Audio Files
+        * Based on: https://www.youtube.com/watch?v=ix_pvZSJn5I
+        * See also: https://editor.p5js.org/markbaldridge/sketches/b9ANZsnMT
+        * Challenge: You can have more Tone.Players, each can hold as many clips as you like, including all the same ones as another Tone.Players holds but sending them elsewhere...
+        * OR you might use a variable in the line that connects the Players to the effect, such that different keystrokes or button pushes change the variable to refer to different effects
+        * ALSO: HOw can I playback more than one effected clip at once?
+        */
+
+        //SETUP SOME EFFECTS
+        //feedbackDelay
+        let fbDelay = new Tone.FeedbackDelay({
+            delayTime: 0.1,
+            feedback: 0.1,
+            wet: 0.5
+        });
+
+        //autoWah
+        const autWah = new Tone.AutoWah({
+            gain: 0.5,
+            octaves: 4,
+            sensitivity: 0.5,
+            wet: 1,
+        })
+
+        //gain 
+        const gain = new Tone.Gain(0.3);
+
+        //the patch bay, or chain of inputs/outputs
+        fbDelay.connect(autWah);
+        autWah.connect(gain);
+        gain.toDestination();
+
+        // create the Tone.Players and plug into patch bay
+        const players = new Tone.Players({
+            cow: "audio/cow.wav",
+            pop: "audio/pop.mp3"
+        }).connect(fbDelay);
+
+        /* 
+        // wait for all audio files to load
+         Tone.loaded().then(() => {
+             console.log("Audio loaded");
+         });
+         */
+
+        // attach event listeners to HTML buttons
+        document.getElementById("cow-btn").addEventListener("click", () => playSound("cow"));
+        document.getElementById("pop-btn").addEventListener("click", () => playSound("pop"));
+
+        // start audio on click
+        async function playSound(name) {
+            await Tone.start(); // resume audio context if suspended
+            players.player(name).start();
+            console.log(name + " played");
+        }
+
+    </script>
+
+</body>
+
+</html>

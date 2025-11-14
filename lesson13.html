@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Lesson 13</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+    <!-- this is the start of content -->
+    <h1>Granular Synthesis</h1>
+
+    <!--create a button named cow_btn-->
+    <button id="gravy-btn">Gravy</button>
+
+
+    <!--BOTTOM-->
+    <!--Nav Buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/lesson13.html', '_blank')">Code</button>
+        <button class="right" onclick="window.open('lesson14.html')">Next</button>
+    </div>
+
+    <!--JAVASCRIPT-->
+    <script>
+
+            /*
+        Processing Audio Files
+        * Based on: 
+        * See also: 
+        * Challenge: 
+        */
+/*
+        //SETUP SOME EFFECTS
+        //feedbackDelay
+        let fbDelay = new Tone.FeedbackDelay({
+            delayTime: 0.1,
+            feedback: 0.1,
+            wet: 0.5
+        });
+
+        //autoWah
+        const autWah = new Tone.AutoWah({
+            gain: 0.5,
+            octaves: 4,
+            sensitivity: 0.5,
+            wet: 1,
+        })
+
+        //gain 
+        const gain = new Tone.Gain(0.5);
+
+        //the patch bay, or chain of inputs/outputs
+        fbDelay.connect(autWah);
+        autWah.connect(gain);
+        gain.toDestination();
+
+        */
+
+    let playing = false;
+
+ // Granular player 
+    const grain = new Tone.GrainPlayer({
+        url: "audio/gravy.wav",
+        loop: true,
+        // many short grains
+        grainSize: 0.03,     // smaller grains = more "spray"
+        // lots of overlap = thick cloud
+        overlap: 0.25,       // 0.2–0.5 is good for smear
+        // pitch-shift via rate
+        playbackRate: 0.7,   // < 1 = down, > 1 = up
+        // extra detune in cents
+        detune: 600          // try 200–1200
+    }).toDestination();
+
+
+        /* 
+        // wait for all audio files to load
+         Tone.loaded().then(() => {
+             console.log("Audio loaded");
+         });
+         */
+
+        // attach event listeners to HTML button
+    document.getElementById("gravy-btn").addEventListener("click", async () => {
+        await Tone.start();      // unlock audio
+        await Tone.loaded();     // ensure buffer ready
+
+
+        if (!playing) {
+            grain.start();         // (optionally: grain.start("+0", 0))
+            playing = true;
+        } else {
+            grain.stop();
+            playing = false;
+        }
+/*
+         grain.playbackRate = 0.5 + Math.random() * 1.0; // 0.5–1.5
+        grain.detune = (Math.random() - 0.5) * 1200;    // ±1200 cents
+        grain.start();
+*/
+    });
+</script>
+
+</body>
+
+</html>

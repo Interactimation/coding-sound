@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="codingSoundFavicon.ico" />
 
-    <title>Lesson 13</title>
+    <title>Granular Project 01</title>
 
     <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
@@ -19,9 +19,9 @@
 <body>
 
     <!-- this is the start of content -->
-    <h1>Granular Synthesis</h1>
+    <h1>Granular Player 01</h1>
 
-    <!--create a button named gravy_btn-->
+    <!--create a button named cow_btn-->
     <button id="gravy-btn">Gravy</button>
 
 
@@ -70,7 +70,7 @@
 
         */
 
-        //var "playing"
+    //var called "playing"
     let playing = false;
 
  // Granular player 
@@ -84,29 +84,41 @@
         // pitch-shift via rate
         playbackRate: 0.7,   // < 1 = down, > 1 = up
         // extra detune in cents
-        detune: 600          // try 200–1200
+        detune: 600,          // try 200–1200
+      
+        loopStart: 1,
+        loopEnd: 1.8,
+        reverse: true,
+
+
+
     }).toDestination();
+
+
+        /* 
+        // wait for all audio files to load
+         Tone.loaded().then(() => {
+             console.log("Audio loaded");
+         });
+         */
 
         // attach event listeners to HTML button
     document.getElementById("gravy-btn").addEventListener("click", async () => {
         await Tone.start();      // unlock audio
         await Tone.loaded();     // ensure buffer ready
-        //if playing is false, start grain, and set playing to true
+
+
         if (!playing) {
             grain.start();         // (optionally: grain.start("+0", 0))
             playing = true;
         } else {
-            //if playing is true stop grain and reset playing to false
             grain.stop();
             playing = false;
         }
-
-
-// randomize detune and playback rate each time the button's clicked
-        /*
+/*
          grain.playbackRate = 0.5 + Math.random() * 1.0; // 0.5–1.5
         grain.detune = (Math.random() - 0.5) * 1200;    // ±1200 cents
-        */
+*/
     });
 </script>
 

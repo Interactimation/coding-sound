@@ -37,91 +37,91 @@
     <!--JAVASCRIPT-->
     <script>
 
-            /*
-        Processing Audio Files
-        * Based on: 
-        * See also: 
-        * Challenge: 
-        */
-/*
-        //SETUP SOME EFFECTS
-        //feedbackDelay
-        let fbDelay = new Tone.FeedbackDelay({
-            delayTime: 0.1,
-            feedback: 0.1,
-            wet: 0.5
-        });
+        /*
+    Processing Audio Files
+    * Based on: 
+    * See also: 
+    * Challenge: 
+    */
+        /*
+                //SETUP SOME EFFECTS
+                //feedbackDelay
+                let fbDelay = new Tone.FeedbackDelay({
+                    delayTime: 0.1,
+                    feedback: 0.1,
+                    wet: 0.5
+                });
+        
+                //autoWah
+                const autWah = new Tone.AutoWah({
+                    gain: 0.5,
+                    octaves: 4,
+                    sensitivity: 0.5,
+                    wet: 1,
+                })
+        
+                        //gain 
+                const gain = new Tone.Gain(0.5);
+        
+                //the patch bay, or chain of inputs/outputs
+                fbDelay.connect(autWah);
+                autWah.connect(gain);
+                gain.toDestination();
+        
+                */
 
-        //autoWah
-        const autWah = new Tone.AutoWah({
-            gain: 0.5,
-            octaves: 4,
-            sensitivity: 0.5,
-            wet: 1,
-        })
-
-                //gain 
-        const gain = new Tone.Gain(0.5);
-
-        //the patch bay, or chain of inputs/outputs
-        fbDelay.connect(autWah);
-        autWah.connect(gain);
-        gain.toDestination();
-
-        */
-
-    //var called "playing"
-    let playing = false;
-let strt = 1;
-let nd = 1.2;
-    const step = 0.01; // how much to slide the window each loop
+        //var called "playing"
+        let playing = false;
+        let strt = 1;
+        let nd = 1.2;
+        const step = 0.01; // how much to slide the window each loop
 
 
-                    //gain 
-                        const gain = new Tone.Gain(4);
+        //gain 
+        const grangain = new Tone.Gain(4);
 
- // Granular player 
-    const grain = new Tone.GrainPlayer({
-        url: "audio/pianochords.mp3",
-         reverse: true,
-        loop: true,
-        // many short grains
-        grainSize: 0.05,     // smaller grains = more "spray"
-        // lots of overlap = thick cloud
-        overlap: 0.25,       // 0.2–0.5 is good for smear
-        // pitch-shift via rate
-        playbackRate: 10,   // < 1 = down, > 1 = up
-        // extra detune in cents
-        //detune: 600,          // try 200–1200
-      
-        loopStart: strt,
-        loopEnd: nd, 
-       
-   onload: () => {
-    const window = nd - strt;              // size of the loop region
-    const dur = grain.buffer.duration;     // full file length (seconds)
+        // Granular player   
+        const grain = new Tone.GrainPlayer({
+            url: "audio/pianochords.mp3",
+            reverse: true,
+            loop: true,
+            // many short grains
+            grainSize: 0.05,     // smaller grains = more "spray"
+            // lots of overlap = thick cloud
+            overlap: 0.30,       // 0.2–0.5 is good for smear
+            // pitch-shift via rate
+            playbackRate: 10,   // < 1 = down, > 1 = up
+            // extra detune in cents
+            //detune: 600,          // try 200–1200
 
-    // how long one loop takes in seconds:
-    const loopTime = window / Math.abs(grain.playbackRate);
+            loopStart: strt,
+            loopEnd: nd,
 
-    setInterval(() => {
-      // slide the window
-      strt += step;
-      nd   += step;
+            onload: () => {
+                const window = nd - strt;              // size of the loop region
+                const dur = grain.buffer.duration;     // full file length (seconds)
 
-      // wrap when we hit the end of the file
-      if (nd > dur) {
-        strt = 0;
-        nd   = window;
-      }
+                // how long one loop takes in seconds:
+                const loopTime = window / Math.abs(grain.playbackRate);
 
-      grain.loopStart = strt;
-      grain.loopEnd   = nd;
-    }, loopTime * 1000); // ms
-  }
-}).connect(gain);
+                setInterval(() => {
+                    // slide the window
+                    strt += step;
+                    nd += step;
 
-gain.toDestination();
+                    // wrap when we hit the end of the file
+                    if (nd > dur) {
+                        strt = 0;
+                        nd = window;
+                    }
+
+                    grain.loopStart = strt;
+                    grain.loopEnd = nd;
+                }, loopTime * 1000); // ms
+            }
+        }).connect(grangain);
+
+        grangain.toDestination();
 
 
         /* 
@@ -132,24 +132,24 @@ gain.toDestination();
          */
 
         // attach event listeners to HTML button
-    document.getElementById("gravy-btn").addEventListener("click", async () => {
-        await Tone.start();      // unlock audio
-        await Tone.loaded();     // ensure buffer ready
+        document.getElementById("gravy-btn").addEventListener("click", async () => {
+            await Tone.start();      // unlock audio
+            await Tone.loaded();     // ensure buffer ready
 
 
-        if (!playing) {
-            grain.start();         // (optionally: grain.start("+0", 0))
-            playing = true;
-        } else {
-            grain.stop();
-            playing = false;
-        }
-/*
-         grain.playbackRate = 0.5 + Math.random() * 1.0; // 0.5–1.5
-        grain.detune = (Math.random() - 0.5) * 1200;    // ±1200 cents
-*/
-    });
-</script>
+            if (!playing) {
+                grain.start();         // (optionally: grain.start("+0", 0))
+                playing = true;
+            } else {
+                grain.stop();
+                playing = false;
+            }
+            /*
+                     grain.playbackRate = 0.5 + Math.random() * 1.0; // 0.5–1.5
+                    grain.detune = (Math.random() - 0.5) * 1200;    // ±1200 cents
+            */
+        });
+    </script>
 
 </body>
 

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>the music box</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>MuseBox</h1>
+    <p>Click several spots in the blue square</p>
+
+
+    <!--the canvas-->
+    <div>
+        <canvas id="soundCanvas" width="400" height="400"></canvas>
+        <br />
+        <style>
+            canvas {
+                background-color: rgb(92, 92, 127);
+                display: block;
+                margin: 50px auto;
+                border: 2px solid black;
+            }
+        </style>
+    </div>
+
+
+    <!--JAVASCRIPT-->
+
+    <script>
+
+       //instantiate Synth, send it to the speakers
+        const synth = new Tone.Synth().toDestination();
+
+        // variables for synth volume and Hz
+        //let vol = 0; // this will actually be audible (see below)
+    
+        //let pitch = 440; //Hz
+
+        //get the canvas by its id and construct it as a variable
+       const scanvas = document.getElementById("soundCanvas");
+
+        //add an event listener to the canvas
+       // scanvas.addEventListener("click", e => {
+
+            //here I'm using the first click on the canvas to start Tone
+            if (Tone.context.state !== "running") await
+            Tone.start();//
+
+            // get click position relative to scanvas
+           // const rect = scanvas.getBoundingClientRect();
+            //const x = e.clientX - rect.left;
+            //const y = e.clientY - rect.top;
+
+            // map x to a range between -36 and 0, here's why: https://sound.stackexchange.com/questions/25529/what-is-0-db-in-digital-audio
+           // const minDb = -36;
+           // const maxDb = 0;
+           // vol = minDb + (x / scanvas.width) * (maxDb - minDb);
+           // synth.volume.value = vol;
+
+            // map y to [130.81, 2093] (invert so top = high pitch)
+            //const minHz = 130.81;
+            //const maxHz = 2093.0;
+           // pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+            //set the volume of the synth to the value of the variable "vol"
+           // synth.volume.value = vol;
+            // trigger the synth with the value of the variable "pitch" as where the Hx or concert note (like A4) would go
+          //  synth.triggerAttackRelease(pitch, "4n");
+
+            //readout values to console
+         //  console.log("vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+      //  }); //
+
+// --- Assumed variables from your environment ---
+// Ensure these are defined elsewhere in your script:
+// let synth; // e.g., synth = new Tone.Synth().toDestination();
+// const scanvas = document.getElementById('myCanvas'); 
+
+// Get the element to display live coordinates (optional HTML element)
+const coordinatesDisplay = document.getElementById('coordinates');
+
+// Flag to track if audio has started
+let audioStarted = false;
+
+// Function to handle mapping mouse position to sound parameters
+function updateSynthParameters(e) {
+    // get mouse position relative to scanvas
+    const rect = scanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // map x to a range between -36 and 0 dB
+    const minDb = -36;
+    const maxDb = 0;
+    const vol = minDb + (x / scanvas.width) * (maxDb - minDb);
+    
+    // Smoothly update the synth's volume
+    // Adjust the ramp time (e.g., 0.05 seconds) for smoother transitions
+    synth.volume.value = vol;
+    console.log(vol); 
+
+    // map y to [130.81, 2093] Hz (invert so top = high pitch)
+    const minHz = 130.81;
+    const maxHz = 2093.0;
+    const pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+
+    // Smoothly update the synth's frequency if the audio context is running
+    if (audioStarted && Tone.context.state === "running") {
+         // Using setTargetAtTime for smooth pitch bending instead of rapid triggerAttackRelease calls
+        synth.frequency.value = pitch;
+    }
+
+    // Update the display element if it exists
+    if (coordinatesDisplay) {
+        coordinatesDisplay.textContent = `(${x.toFixed(0)}, ${y.toFixed(0)})`;
+    }
+    
+    // readout values to console
+    //console.log("MOVE: vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+}
+
+// 1. Add a 'click' event listener JUST to start the audio context and start the sound
+scanvas.addEventListener("click", async () => {
+    if (Tone.context.state !== "running") {
+        await Tone.start();
+        audioStarted = true;
+        // Start a sustained tone once clicked
+        // You may need to adjust how your specific synth type handles a sustained start
+        synth.triggerAttack(synth.frequency.value || 'C4'); 
+    }
+});
+
+// 2. Add the 'mousemove' event listener to control the parameters continuously
+// We attach the update function to the mousemove event.
+scanvas.addEventListener('mousemove', updateSynthParameters);
+
+// Optional: Add a mouseleave listener to stop the sound when the cursor leaves the canvas
+scanvas.addEventListener('mouseleave', () => {
+    if (audioStarted) {
+        synth.triggerRelease();
+    }
+});
+
+
+    </script>
+
+</body>
+
+</html>

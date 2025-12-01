@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>musebox</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>The Music Box</h1>
+    <p>Click several spots in the blue square</p>
+
+
+    <!--the canvas-->
+    <div>
+        <canvas id="soundCanvas" width="400" height="400"></canvas>
+        <br />
+        <style>
+            canvas {
+                background-color: rgb(92, 92, 127);
+                display: block;
+                margin: 50px auto;
+                border: 2px solid black;
+            }
+        </style>
+    </div>
+
+
+    <!--JAVASCRIPT-->
+
+    <script>
+
+        //instantiate Synth, send it to the speakers
+
+      const synth = new Tone.Synth().toDestination();
+        const synths = [
+      new Tone.Synth(),
+      
+    ];
+
+     //Two: AutoWah, only parts of the options object are shown here, notice that I've changed some values since last time I used this
+    const autWah = new Tone.AutoWah({
+      gain: 0.5,
+      octaves: 6,
+      sensitivity: 0.5,
+      wet: 1,
+    })
+
+    const phaser = new Tone.Phaser({
+    frequency: 15,
+    octaves: 5,
+    baseFrequency: 1000,
+
+    })
+
+    synth.connect(phaser);
+    phaser.connect(autWah);
+    autWah.toDestination();
+
+
+        // variables for synth volume and Hz
+        let vol = 0; // this will actually be audible (see below)
+        let pitch = 440; //Hz
+
+        //get the canvas by its id and construct it as a variable
+        const scanvas = document.getElementById("soundCanvas");
+
+        //add an event listener to the canvas
+        scanvas.addEventListener("click", e => {
+
+            //here I'm using the first click on the canvas to start Tone
+            if (Tone.context.state !== "running") await
+            Tone.start();
+
+            // get click position relative to scanvas
+            const rect = scanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // map x to a range between -36 and 0, here's why: https://sound.stackexchange.com/questions/25529/what-is-0-db-in-digital-audio
+            const minDb = -36;
+            const maxDb = 0;
+            vol = minDb + (x / scanvas.width) * (maxDb - minDb);
+            synth.volume.value = vol;
+
+            // map y to [130.81, 2093] (invert so top = high pitch)
+            const minHz = 130.81;
+            const maxHz = 2093.0;
+            pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+            //set the volume of the synth to the value of the variable "vol"
+            synth.volume.value = vol;
+            // trigger the synth with the value of the variable "pitch" as where the Hx or concert note (like A4) would go
+            synth.triggerAttackRelease(pitch, "4n");
+
+            //readout values to console
+           console.log("vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+        });
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

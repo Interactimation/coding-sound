@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>the music box</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+</head>
+
+<body>
+    <!-- this is the start of content -->
+    <h1>MuseBox</h1>
+    <p>Click several spots in the blue square</p>
+
+
+    <!--the canvas-->
+    <div>
+        <canvas id="soundCanvas" width="400" height="400"></canvas>
+        <br />
+        <style>
+            canvas {
+                background-color: rgb(92, 92, 127);
+                display: block;
+                margin: 50px auto;
+                border: 2px solid black;
+            }
+        </style>
+    </div>
+
+
+    <!--JAVASCRIPT-->
+
+    <script>
+        const synth = new Tone.Synth().toDestination();
+        const scanvas = document.getElementById("soundCanvas");
+
+        let audioStarted = false;
+        let sounding = false;
+
+        function updateSynthParameters(e) {
+            const r = scanvas.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+
+            const vol = -36 + (x / scanvas.width) * 36;   // -36..0 dB
+            synth.volume.value = vol;
+
+            const minHz = 130.81, maxHz = 2093.0;
+            const pitch = maxHz - (y / scanvas.height) * (maxHz - minHz);
+            synth.frequency.value = pitch;
+        }
+
+        // start audio + start tone on first pointer
+        scanvas.addEventListener("pointerdown", async () => {
+            if (!audioStarted) { await Tone.start(); audioStarted = true; }
+            if (!sounding) { synth.triggerAttack(synth.frequency.value || "C4"); sounding = true; }
+        });
+
+        // continuous control
+        scanvas.addEventListener("pointermove", (e) => {
+            if (!audioStarted) return;
+            updateSynthParameters(e);
+        });
+
+        // stop when pointer lifts or leaves
+        function stopSound() { if (sounding) { synth.triggerRelease(); sounding = false; } }
+        scanvas.addEventListener("pointerup", stopSound);
+        scanvas.addEventListener("pointerleave", stopSound);
+    </script>
+
+</body>
+
+</html>

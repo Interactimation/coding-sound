@@ -54,13 +54,8 @@
        // scanvas.addEventListener("click", e => {
 
             //here I'm using the first click on the canvas to start Tone
-           // if (Tone.context.state !== "running") await
-            //Tone.start();//
-
-             async function ensureAudioStarted() { // ADD
-                    if (Tone.context.state !== "running") await Tone.start(); // ADD
-                    if (!synth) synth = new Tone.Synth().toDestination(); // ADD
-                }
+            if (Tone.context.state !== "running") await
+            Tone.start();//
 
             // get click position relative to scanvas
            // const rect = scanvas.getBoundingClientRect();
@@ -111,8 +106,7 @@ function updateSynthParameters(e) {
     
     // Smoothly update the synth's volume
     // Adjust the ramp time (e.g., 0.05 seconds) for smoother transitions
-    synth.volume.value = vol;
-    //console.log(vol); 
+    synth.volume.value = vol; 
 
     // map y to [130.81, 2093] Hz (invert so top = high pitch)
     const minHz = 130.81;
@@ -131,7 +125,7 @@ function updateSynthParameters(e) {
     }
     
     // readout values to console
-    //console.log("MOVE: vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
+    console.log("MOVE: vol =", vol.toFixed(2), "pitch =", pitch.toFixed(2));
 }
 
 // 1. Add a 'click' event listener JUST to start the audio context and start the sound

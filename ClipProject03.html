@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="codingSoundFavicon.ico" />
+
+    <title>Clip Project 02</title>
+
+    <!--import Tone.js, link found here: https://cdnjs.com/libraries/tone-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.5/Tone.min.js"></script>
+
+    <!--import the webpage's stylesheet-->
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+
+
+    <!-- this is the start of content -->
+    <h1>Clip Player 03</h1>
+
+    <!--create some buttons-->
+    <button id="piano-btn">Piano</button>
+    <button id="kalimba-btn">Kalimba</button>
+
+
+    <!--BOTTOM-->
+    <!--Nav Buttons-->
+    <div class="button-row">
+        <button class="left" onclick="location.href='index.html'">ToC</button>
+        <button class="center"
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/ClipProject02.html', '_blank')">Code</button>
+        <button class="right" onclick="window.open('ClipProject03.html')">Next</button>
+    </div>
+
+    <!--JAVASCRIPT-->
+    <script>
+let playing = false;
+let grain = null;  
+let slideTimer = null;     // hold the interval id
+
+const clips = ["audio/pianochords.mp3", "audio/kalimbatines.mp3"];
+let step;
+let strt;
+let nd;
+
+//EVENT LISTENERS
+
+////1. Piano
+document.getElementById("piano-btn").addEventListener("click", async () => {
+  await Tone.start();
+step = 0.01
+  if (!playing) {
+    // (re)start: make sure no leftovers exist
+    if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
+    if (grain) { grain.stop(); grain.dispose(); grain = null; }
+
+    const grangain = new Tone.Gain(4).toDestination();
+
+    grain = new Tone.GrainPlayer({
+      url: clips[0],
+      reverse: true,
+      loop: true,
+      grainSize: 0.05,
+      overlap: 0.30,
+      playbackRate: 10,
+      loopStart: 1,
+      loopEnd: 1.2,
+      onload: () => {
+        // reset sliding window for the new buffer
+        strt = 1; nd = 1.2;
+        const window = nd - strt;
+        const dur = grain.buffer.duration;
+        const loopTime = window / Math.abs(grain.playbackRate);
+        if (slideTimer) clearInterval(slideTimer);
+        slideTimer = setInterval(() => {
+          strt += step; nd += step;
+          if (nd > dur) { strt = 0; nd = window; }
+          grain.loopStart = strt;
+          grain.loopEnd = nd;
+        }, loopTime * 1000);
+      }
+    }).connect(grangain);
+
+    await Tone.loaded();   // wait for the new url to load
+    grain.start();
+    playing = true;
+
+  } else {
+    // stop/cleanup
+    if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
+    if (grain) { grain.stop(); grain.dispose(); grain = null; }
+    playing = false;
+  }
+});
+
+////1. Kalimba
+document.getElementById("kalimba-btn").addEventListener("click", async () => {
+  await Tone.start();
+step = 0.05
+  if (!playing) {
+    // (re)start: make sure no leftovers exist
+    if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
+    if (grain) { grain.stop(); grain.dispose(); grain = null; }
+
+    const grangain = new Tone.Gain(0.5).toDestination();
+
+    grain = new Tone.GrainPlayer({
+      url: clips[1],
+      reverse: false,
+      loop: true,
+      grainSize: 0.5,
+      overlap: 0.03,
+      playbackRate: 6,
+      loopStart: 1,
+      loopEnd: 2,
+      onload: () => {
+        // reset sliding window for the new buffer
+        strt = 1; nd = 1.2;
+        const window = nd - strt;
+        const dur = grain.buffer.duration;
+        const loopTime = window / Math.abs(grain.playbackRate);
+        if (slideTimer) clearInterval(slideTimer);
+        slideTimer = setInterval(() => {
+          strt += step; nd += step;
+          if (nd > dur) { strt = 0; nd = window; }
+          grain.loopStart = strt;
+          grain.loopEnd = nd;
+        }, loopTime * 1000);
+      }
+    }).connect(grangain);
+
+    await Tone.loaded();   // wait for the new url to load
+    grain.start();
+    playing = true;
+
+  } else {
+    // stop/cleanup
+    if (slideTimer) { clearInterval(slideTimer); slideTimer = null; }
+    if (grain) { grain.stop(); grain.dispose(); grain = null; }
+    playing = false;
+  }
+});
+</script>
+
+</body>
+
+</html>

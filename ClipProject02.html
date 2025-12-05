@@ -21,8 +21,8 @@
     <!-- this is the start of content -->
     <h1>Clip Player 02</h1>
 
-    <!--create a button named cow_btn-->
-    <button id="gravy-btn">Play</button>
+    <!--create some buttons-->
+    <button id="piano-btn">Piano</button>
 
 
     <!--BOTTOM-->
@@ -30,59 +30,30 @@
     <div class="button-row">
         <button class="left" onclick="location.href='index.html'">ToC</button>
         <button class="center"
-            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/ClipPlayer02.html', '_blank')">Code</button>
-        <button class="right" onclick="window.open('ClipPlayer03.html')">Next</button>
+            onclick="window.open('https://github.com/Interactimation/coding-sound/blob/main/ClipProject02.html', '_blank')">Code</button>
+        <button class="right" onclick="window.open('ClipProject03.html')">Next</button>
     </div>
 
     <!--JAVASCRIPT-->
     <script>
 
-        /*
-    Processing Audio Files
-    * Based on: 
-    * See also: 
-    * Challenge: 
-    */
-        /*
-                //SETUP SOME EFFECTS
-                //feedbackDelay
-                let fbDelay = new Tone.FeedbackDelay({
-                    delayTime: 0.1,
-                    feedback: 0.1,
-                    wet: 0.5
-                });
-        
-                //autoWah
-                const autWah = new Tone.AutoWah({
-                    gain: 0.5,
-                    octaves: 4,
-                    sensitivity: 0.5,
-                    wet: 1,
-                })
-        
-                        //gain 
-                const gain = new Tone.Gain(0.5);
-        
-                //the patch bay, or chain of inputs/outputs
-                fbDelay.connect(autWah);
-                autWah.connect(gain);
-                gain.toDestination();
-        
-                */
-
         //var called "playing"
         let playing = false;
+        //start and end vars
         let strt = 1;
         let nd = 1.2;
+        //step var
         const step = 0.01; // how much to slide the window each loop
+        
+        //clip array
+        let clips = ["audio/pianochords.mp3", "audio/kalimbatines.mp3"];
+    
 
-
-        //gain 
-        const grangain = new Tone.Gain(4);
-
-        // Granular player   
-        const grain = new Tone.GrainPlayer({
-            url: "audio/pianochords.mp3",
+        // GRANULAR PLAYER
+        //gain var 
+        let grangain = new Tone.Gain(4);  
+        let grain = new Tone.GrainPlayer({
+            url: clips[0],
             reverse: true,
             loop: true,
             // many short grains
@@ -123,17 +94,13 @@
 
         grangain.toDestination();
 
+        // attach event listeners to HTML buttons
 
-        /* 
-        // wait for all audio files to load
-         Tone.loaded().then(() => {
-             console.log("Audio loaded");
-         });
-         */
+        //piano
+        document.getElementById("piano-btn").addEventListener("click", async () => {
 
-        // attach event listeners to HTML button
-        document.getElementById("gravy-btn").addEventListener("click", async () => {
             await Tone.start();      // unlock audio
+            grain.url = clips[0]; //load the first item from clips into the grain url
             await Tone.loaded();     // ensure buffer ready
 
 
@@ -144,11 +111,10 @@
                 grain.stop();
                 playing = false;
             }
-            /*
-                     grain.playbackRate = 0.5 + Math.random() * 1.0; // 0.5–1.5
-                    grain.detune = (Math.random() - 0.5) * 1200;    // ±1200 cents
-            */
+
+
         });
+
     </script>
 
 </body>

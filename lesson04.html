@@ -168,6 +168,16 @@
       }
     });
 
+    const volumeSlider = document.getElementById('volume');
+  const volumeValue = document.getElementById('volume-value');
+  volumeSlider.addEventListener('input', () => {
+    const value = parseFloat(volumeSlider.value);
+    gain.gain.value = value;
+    volumeValue.textContent = value.toFixed(2);
+  });
+
+
+
   </script>
 
 </body>
